@@ -45,7 +45,7 @@ def contiguity_penalty(cont_occ: np.ndarray, cont_types: np.ndarray, **__) -> fl
     num_pos = cont_occ.shape[1]
     out = 0
     for i, c_type in enumerate(cont_types):
-        if c_type == 't3':
+        if c_type != 't3':
             continue
         for pos in range(num_pos - 1):
             out += 1 / 2 * cont_occ[i, pos] - cont_occ[i, pos] * cont_occ[i, pos + 1]
