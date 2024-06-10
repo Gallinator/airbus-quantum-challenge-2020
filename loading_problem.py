@@ -163,10 +163,14 @@ class LoadingProblem:
             solutions.append([cont_occ, slack_vars])
         return solutions
 
-    def filter_solutions(self, solutions: np.ndarray) -> np.ndarray:
+    def filter_solutions(self, solutions: np.ndarray) -> list:
         res = []
         for s in solutions:
-            if self.check_overlap_constraint(s[0]):
+            occ = s[0]
+            if (self.check_overlap_constraint(occ) and
+                    self.check_no_duplicates(occ) and
+                    self.check_max_weight_constraint(occ) and
+                    self.check_contiguity_constraint(occ)):
                 res.append(s)
         return res
 
@@ -176,6 +180,41 @@ class LoadingProblem:
             for i, d_i in enumerate(self.container_d):
                 pos_sum += d_i * cont_occ[i, pos]
             if pos_sum > 1:
+                return False
+        return True
+
+    def check_contiguity_constraint(self, cont_occ: np.ndarray) -> bool:
+        num_cont = cont_occ.shape[0]
+        for c in range(num_cont):
+            if self.container_types[c] != 't3':
+                continue
+            row_sum = np.sum(cont_occ[c])
+            if row_sum == 0:
+                continue
+            if row_sum != 2:
+                return False
+            s = 0
+            for pos in range(self.aircraft.num_positions - 1):
+                s += cont_occ[c, pos] * cont_occ[c, pos + 1]
+            if s != 1:
+                return False
+
+        return True
+
+    def check_max_weight_constraint(self, cont_occ: np.ndarray) -> bool:
+        weight = 0
+        for index, v in np.ndenumerate(cont_occ):
+            i, j = index
+            weight += self.container_t[i] * self.container_masses[i] * v
+        return weight <= self.aircraft.max_payload
+
+    def check_no_duplicates(self, cont_occ: np.ndarray) -> bool:
+        num_cont = cont_occ.shape[0]
+        for c in range(num_cont):
+            s = 0
+            for pos in range(self.aircraft.num_positions):
+                s += self.container_t[c] * cont_occ[c, pos]
+            if s > 1:
                 return False
         return True
 
