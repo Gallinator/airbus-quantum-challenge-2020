@@ -218,6 +218,13 @@ class LoadingProblem:
                 return False
         return True
 
+    def get_payload_weight(self, cont_occ: np.ndarray) -> float:
+        pl_weight = 0
+        for index, v in np.ndenumerate(cont_occ):
+            c, pos = index
+            pl_weight += self.container_t[c] * self.container_masses[c] * v
+        return pl_weight
+
 
 def q_reducer(accumulator, element):
     for key, value in element.items():
