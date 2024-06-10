@@ -1,4 +1,5 @@
 import threading
+import traceback
 
 import numpy as np
 
@@ -30,6 +31,7 @@ class ResultThread(threading.Thread):
         try:
             self.result = self._target(*self._args, **self._kwargs)
         except Exception as e:
+            traceback.print_exc()
             self.result = e
 
     def get_result(self, timeout: float | None = None):
