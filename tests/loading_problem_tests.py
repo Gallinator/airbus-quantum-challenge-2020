@@ -108,3 +108,120 @@ class LoadingProblemTests(unittest.TestCase):
                   ('p_1_1', 'v_w_0'): 10}
 
         self.assertEqual(problem.get_max_capacity_q(), true_q)
+
+    def test_check_overlap_constraint_true(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 0, 1],
+            [1, 1, 0],
+            [0, 0, 0]])
+
+        self.assertTrue(problem.check_overlap_constraint(cont_occ))
+
+    def test_check_overlap_constraint_false(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 1, 0],
+            [1, 1, 0],
+            [1, 0, 0]])
+
+        self.assertFalse(problem.check_overlap_constraint(cont_occ))
+
+    def test_check_contiguity_constraint_true(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 0, 1],
+            [1, 1, 0],
+            [0, 0, 1]])
+
+        self.assertTrue(problem.check_contiguity_constraint(cont_occ))
+
+    def test_check_contiguity_constraint_false(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 1, 0],
+            [1, 0, 1],
+            [1, 0, 0]])
+
+        self.assertFalse(problem.check_contiguity_constraint(cont_occ))
+
+    def test_check_max_weight_constraint_true(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 0, 1],
+            [1, 1, 0],
+            [0, 0, 1]])
+
+        self.assertTrue(problem.check_max_weight_constraint(cont_occ))
+
+    def test_check_max_weight_constraint_false(self):
+        acft = AircraftData(3, 10, 20, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 1, 0],
+            [1, 1, 0],
+            [1, 0, 0]])
+
+        self.assertFalse(problem.check_max_weight_constraint(cont_occ))
+
+    def test_check_no_duplicates_constraint_true(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 0, 1],
+            [1, 1, 0],
+            [0, 0, 1]])
+
+        self.assertTrue(problem.check_no_duplicates_constraint(cont_occ))
+
+    def test_check_no_duplicates_constraint_false(self):
+        acft = AircraftData(3, 10, 20, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 1, 1],
+            [1, 1, 0],
+            [1, 0, 0]])
+
+        self.assertFalse(problem.check_no_duplicates_constraint(cont_occ))
+
+    def test_get_payload_weight(self):
+        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        cont_types = np.array(['t1', 't3', 't2'])
+        cont_masses = np.array([10, 10, 10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+
+        cont_occ = np.array([
+            [0, 1, 1],
+            [1, 1, 0],
+            [0, 1, 0]])
+
+        self.assertEqual(problem.get_payload_weight(cont_occ), 40)
