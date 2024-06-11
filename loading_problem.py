@@ -168,7 +168,7 @@ class LoadingProblem:
         for s in solutions:
             occ = s[0]
             if (self.check_overlap_constraint(occ) and
-                    self.check_no_duplicates(occ) and
+                    self.check_no_duplicates_constraint(occ) and
                     self.check_max_weight_constraint(occ) and
                     self.check_contiguity_constraint(occ)):
                 res.append(s)
@@ -208,7 +208,7 @@ class LoadingProblem:
             weight += self.container_t[i] * self.container_masses[i] * v
         return weight <= self.aircraft.max_payload
 
-    def check_no_duplicates(self, cont_occ: np.ndarray) -> bool:
+    def check_no_duplicates_constraint(self, cont_occ: np.ndarray) -> bool:
         num_cont = cont_occ.shape[0]
         for c in range(num_cont):
             s = 0
