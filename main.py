@@ -67,7 +67,7 @@ def main():
 
     print(cont_occ_solutions)
 
-    payloads = [problem.get_payload_weight(o[0]) for o in cont_occ_solutions]
+    payloads = [problem.get_payload_weight(o) for o in cont_occ_solutions]
     print(payloads)
 
 

@@ -152,25 +152,22 @@ class LoadingProblem:
     def parse_solution(self, results: SampleSet) -> np.ndarray:
         solutions = []
         for r in results.samples():
-            slack_vars = {}
             cont_occ = np.zeros(shape=(len(self.container_types), self.aircraft.num_positions))
             for k, v in r.items():
-                match k[0]:
-                    case 'p':
-                        i = int(k[2])
-                        j = int(k[4])
-                        cont_occ[i, j] = v
-            solutions.append([cont_occ, slack_vars])
-        return solutions
+                if k[0] == 'p':
+                    i = int(k[2])
+                    j = int(k[4])
+                    cont_occ[i, j] = v
+            solutions.append(cont_occ)
+        return np.array(solutions)
 
     def filter_solutions(self, solutions: np.ndarray) -> list:
         res = []
         for s in solutions:
-            occ = s[0]
-            if (self.check_overlap_constraint(occ) and
-                    self.check_no_duplicates_constraint(occ) and
-                    self.check_max_weight_constraint(occ) and
-                    self.check_contiguity_constraint(occ)):
+            if (self.check_overlap_constraint(s) and
+                    self.check_no_duplicates_constraint(s) and
+                    self.check_max_weight_constraint(s) and
+                    self.check_contiguity_constraint(s)):
                 res.append(s)
         return res
 
