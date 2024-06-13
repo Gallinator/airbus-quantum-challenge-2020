@@ -31,9 +31,8 @@ def get_tuned_coefs(data_gen: DataGenerator) -> dict:
 
 def main():
     use_real_sampler = input('Use real sampler? [y/n]').lower() == 'y'
-
-    acft = AircraftData(2, 40, 40000, 26000, -0.1, 0.2)
-    cont_types = np.array(['t1', 't1', 't1', 't1', 't3', 't1'])
+    acft = AircraftData(4, 40, 8000, 26000, -0.1, 0.2)
+    cont_types = np.array(['t1', 't1', 't1', 't1', 't1', 't1'])
     cont_masses = np.array([2134, 3455, 1866, 1699, 3500, 3332])
 
     # Tuning
