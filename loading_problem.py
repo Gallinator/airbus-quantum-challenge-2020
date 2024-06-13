@@ -1,3 +1,4 @@
+import math
 from functools import reduce
 import numpy as np
 from dimod import SampleSet
@@ -12,7 +13,6 @@ class LoadingProblem:
                  container_masses: np.ndarray,
                  target_cg,
                  zero_payload_mass,
-                 num_slack_variables: dict,
                  coefficients: dict):
 
         if len(container_types) != len(container_masses):
@@ -24,10 +24,10 @@ class LoadingProblem:
         self.container_masses = container_masses
         self.target_cg = target_cg
         self.zero_payload_mass = zero_payload_mass
-        self.num_slack_variables = num_slack_variables
         self.container_t = get_container_t(container_types)
         self.container_d = get_container_d(container_types)
         self.coefficients = coefficients
+        self.num_slack_variables = get_num_slack_vars(aircraft, len(container_types))
 
     def get_objective_q(self) -> dict:
         q = {}
@@ -221,6 +221,14 @@ class LoadingProblem:
             c, pos = index
             pl_weight += self.container_t[c] * self.container_masses[c] * v
         return pl_weight
+
+
+def get_num_slack_vars(aircraft: AircraftData, num_containers: int) -> dict:
+    return {
+        'pl_o': aircraft.num_positions,
+        'pl_d': num_containers,
+        'pl_w': math.floor(math.log2(aircraft.max_payload)) + 1
+    }
 
 
 def q_reducer(accumulator, element):

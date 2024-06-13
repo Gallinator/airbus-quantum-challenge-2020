@@ -6,7 +6,7 @@ from dwave.system import DWaveSampler, EmbeddingComposite
 
 from aircraft_data import AircraftData
 from coefficient_tuning import DataGenerator, tune_coef
-from loading_problem import LoadingProblem
+from loading_problem import LoadingProblem, get_num_slack_vars
 from raw_functions import no_overlaps_penalty, objective_f, maximum_capacity_penalty, no_duplicates_penalty, \
     contiguity_penalty
 from utils import ResultThread
@@ -35,13 +35,12 @@ def main():
     acft = AircraftData(2, 40, 40000, 26000, -0.1, 0.2)
     cont_types = np.array(['t1', 't1', 't1', 't1', 't3', 't1'])
     cont_masses = np.array([2134, 3455, 1866, 1699, 3500, 3332])
-    slack_variables_counts = {'pl_o': 2, 'pl_d': 6, 'pl_w': 16}
 
     # Tuning
-    coefs = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, slack_variables_counts))
+    coefs = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, get_num_slack_vars(acft, len(cont_types))))
 
     # Solve
-    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, slack_variables_counts, coefs)
+    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, coefs)
     bqm = as_bqm(problem.get_q(), 'BINARY')
 
     if use_real_sampler:
