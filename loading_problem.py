@@ -224,6 +224,17 @@ class LoadingProblem:
             pl_weight += self.container_t[c] * self.container_masses[c] * v
         return pl_weight
 
+    def get_cg(self, cont_occ: np.ndarray) -> float:
+        s1 = 0
+        s2 = 0
+        for index, p in np.ndenumerate(cont_occ):
+            i, j = index
+            s2 += self.container_t[i] * self.container_masses[i] * p
+            s1 += s2 * self.aircraft.locations[j]
+        s1 += self.zero_payload_mass * self.zero_payload_cg
+        s2 += self.zero_payload_mass
+        return s1 / s2
+
 
 def get_num_slack_vars(aircraft: AircraftData, num_containers: int) -> dict:
     return {
