@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import cairosvg
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
@@ -31,7 +30,7 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
                     draw_area_start_x=margin_x[0],
                     font=font)
 
-    fig, axs = plt.subplots(2, figsize=(12, 8), sharex=False, height_ratios=[4, 1])
+    fig, axs = plt.subplots(3, figsize=(7, 7), sharex=False, height_ratios=[4, 1, 2])
 
     axs[0].imshow(bg_img)
     axs[0].imshow(img)
@@ -41,10 +40,21 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
     axs[0].set_xlim(-image_margin, IMG_SIZE[0] + image_margin)
 
     plot_cg(axs[1], problem, cont_occ)
+    plot_shear(axs[2], problem, cont_occ)
 
     plt.tight_layout()
     fig.savefig('out/plot.png')
     plt.show()
+
+
+def plot_shear(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
+    x = [-problem.aircraft.payload_area_length / 2, 0, problem.aircraft.payload_area_length / 2]
+    y = [0, problem.aircraft.max_shear, 0]
+    ax.plot(x, y, c='blue', label='Max shear')
+    ax.set_xlabel('x')
+    ax.set_ylabel('Shear [N]')
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+    ax.legend()
 
 
 def plot_cg(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
