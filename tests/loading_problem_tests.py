@@ -16,7 +16,7 @@ class LoadingProblemTests(unittest.TestCase):
             LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {})
 
     def test_objective_q(self):
-        acft = AircraftData(2, 10, 0, 0, 0, 0)
+        acft = AircraftData(2, 10, 1, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {})
@@ -29,7 +29,7 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_objective_q(), true_q)
 
     def test_no_overlaps_q(self):
-        acft = AircraftData(2, 10, 0, 0, 0, 0)
+        acft = AircraftData(2, 10, 1, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {'pl_o': 1})
@@ -50,7 +50,7 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_no_overlaps_q(), true_q)
 
     def test_no_duplicates_q(self):
-        acft = AircraftData(2, 10, 0, 0, 0, 0)
+        acft = AircraftData(2, 10, 1, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {'pl_d': 1})
@@ -71,7 +71,7 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_no_duplicates(), true_q)
 
     def test_contiguity_q(self):
-        acft = AircraftData(2, 10, 0, 0, 0, 0)
+        acft = AircraftData(2, 10, 1, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't3'])
         cont_masses = np.array([100, 100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_c': 1})
@@ -86,16 +86,16 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_contiguity(), true_q)
 
     def test_max_capacity_q(self):
-        acft = AircraftData(2, 10, 30, 0, 0, 0)
+        acft = AircraftData(2, 10, 1, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
-        true_q = {('p_0_0', 'p_0_0'): -500,
-                  ('p_0_1', 'p_0_1'): -500,
-                  ('p_1_0', 'p_1_0'): -275,
-                  ('p_1_1', 'p_1_1'): -275,
-                  ('v_w_0', 'v_w_0'): -59,
+        true_q = {('p_0_0', 'p_0_0'): 80,
+                  ('p_0_1', 'p_0_1'): 80,
+                  ('p_1_0', 'p_1_0'): 15,
+                  ('p_1_1', 'p_1_1'): 15,
+                  ('v_w_0', 'v_w_0'): -1,
                   ('p_0_0', 'p_0_1'): 200,
                   ('p_0_0', 'p_1_0'): 100,
                   ('p_0_1', 'p_1_0'): 100,
