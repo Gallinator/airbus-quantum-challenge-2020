@@ -1,3 +1,6 @@
+from pathlib import Path
+
+import cairosvg
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,29 +12,40 @@ TEXT_COLOR = '#151e0b'
 
 
 def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
-    img = Image.new(mode='RGB', size=(3840, 2160), color=(255, 255, 255))
+    Path('out').mkdir(exist_ok=True)
+    cairosvg.svg2png(url='resources/aircraft_bg_res.svg', write_to='out/plot.png', output_width=3840,
+                     output_height=2160)
+    bg_img = Image.open('out/plot.png')
+    img = Image.new(mode='RGBA', size=(3840, 2160), color='#FFFFFF00')
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", int(img.size[1] * 0.05))
     w, h = img.size
-    margin_x, margin_y = (w * 0.02, h * 0.05)
-    draw_area_size = (w - margin_x * 2, h - margin_y * 2)
+    margin_x = (w * 0.143, w * 0.195)
+    margin_y = h * 0.05
+    draw_area_size = (w - (margin_x[0] + margin_x[1]), h - margin_y * 2)
 
-    draw_containers(img, cont_occ, problem, 20.0, draw_area_size, font)
+    draw_containers(img, cont_occ, problem, 20.0,
+                    draw_area_size=draw_area_size,
+                    draw_area_start_x=margin_x[0],
+                    font=font)
 
+    plt.imshow(bg_img)
     plt.imshow(img)
+    plt.savefig('out/plot.png')
     plt.show()
 
 
 def get_container_draw_area_size(aircraft: AircraftData, draw_area_size: tuple) -> tuple:
-    return draw_area_size[0] / aircraft.num_positions, min(512, draw_area_size[1])
+    return draw_area_size[0] / aircraft.num_positions, min(300, draw_area_size[1])
 
 
-def draw_containers(img: Image, cont_occ: np.ndarray, problem: LoadingProblem, cont_margin_x, draw_area_size, font):
+def draw_containers(img: Image, cont_occ: np.ndarray, problem: LoadingProblem, cont_margin_x, draw_area_start_x,
+                    draw_area_size, font):
     draw = ImageDraw.Draw(img)
     cont_area_w, cont_area_h = get_container_draw_area_size(problem.aircraft, draw_area_size)
 
     img_center_y = img.size[1] / 2
     # This will be updated every time a whole box is drawn
-    next_draw_start_x = (img.size[0] - draw_area_size[0]) / 2
+    next_draw_start_x = draw_area_start_x
     pos = 0
     while pos < problem.aircraft.num_positions:
         pos_increase = 1
