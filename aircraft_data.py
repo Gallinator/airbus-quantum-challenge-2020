@@ -7,8 +7,8 @@ class AircraftData:
         self.payload_area_length = payload_area_length
         self.max_payload = max_payload
         self.max_shear = max_shear
-        self.min_cg = min_cg
-        self.max_cg = max_cg
+        self.min_cg = min_cg * payload_area_length
+        self.max_cg = max_cg * payload_area_length
         self.locations = self.get_locations()
 
         if min_cg > max_cg:
