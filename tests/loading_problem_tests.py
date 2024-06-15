@@ -13,13 +13,13 @@ class LoadingProblemTests(unittest.TestCase):
         cont_types = np.array(['t1', 't1'])
         cont_masses = np.array([100, 100, 100])
         with self.assertRaises(ValueError):
-            LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {}, {})
+            LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {})
 
     def test_objective_q(self):
         acft = AircraftData(2, 10, 0, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {}, {})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {})
 
         true_q = {('p_0_0', 'p_0_0'): -100,
                   ('p_0_1', 'p_0_1'): -100,
@@ -32,7 +32,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(2, 10, 0, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_o': 2}, {'pl_o': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {'pl_o': 1})
 
         true_q = {('p_0_0', 'p_1_0'): 2,
                   ('p_0_0', 'v_o_0_0'): 2,
@@ -53,7 +53,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(2, 10, 0, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_d': 2}, {'pl_d': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000,  -0.05, {'pl_d': 1})
 
         true_q = {('p_0_0', 'p_0_1'): 2,
                   ('p_0_0', 'v_d_0_0'): 2,
@@ -74,7 +74,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(2, 10, 0, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't3'])
         cont_masses = np.array([100, 100, 100])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {}, {'pl_c': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_c': 1})
 
         true_q = {('p_1_0', 'p_1_0'): 1 / 2,
                   ('p_1_1', 'p_1_1'): 1 / 2,
@@ -89,7 +89,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(2, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         true_q = {('p_0_0', 'p_0_0'): -500,
                   ('p_0_1', 'p_0_1'): -500,
@@ -113,7 +113,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 0, 1],
@@ -126,7 +126,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 1, 0],
@@ -139,7 +139,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 0, 1],
@@ -152,7 +152,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 1, 0],
@@ -165,7 +165,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 0, 1],
@@ -178,7 +178,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 20, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 1, 0],
@@ -191,7 +191,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 0, 1],
@@ -204,7 +204,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 20, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 1, 1],
@@ -217,7 +217,7 @@ class LoadingProblemTests(unittest.TestCase):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
-        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, {'pl_w': 1}, {'pl_w': 1})
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05, {'pl_w': 1})
 
         cont_occ = np.array([
             [0, 1, 1],
