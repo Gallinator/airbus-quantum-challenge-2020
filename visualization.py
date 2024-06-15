@@ -4,19 +4,22 @@ import cairosvg
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
+import matplotlib.patches as mpatches
 from aircraft_data import AircraftData
 from loading_problem import LoadingProblem
 
 CONT_BOX_COLOR = {'t1': '#cdeda3', 't2': '#dce7c8', 't3': '#bcece7'}
 TEXT_COLOR = '#151e0b'
+IMG_SIZE = (3840, 2160)
 
 
 def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
     Path('out').mkdir(exist_ok=True)
-    cairosvg.svg2png(url='resources/aircraft_bg_res.svg', write_to='out/plot.png', output_width=3840,
-                     output_height=2160)
+    cairosvg.svg2png(url='resources/aircraft_bg_res.svg', write_to='out/plot.png', output_width=IMG_SIZE[0],
+                     output_height=IMG_SIZE[1])
     bg_img = Image.open('out/plot.png')
-    img = Image.new(mode='RGBA', size=(3840, 2160), color='#FFFFFF00')
+    img = Image.new(mode='RGBA', size=IMG_SIZE, color='#FFFFFF00')
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", int(img.size[1] * 0.05))
     w, h = img.size
     margin_x = (w * 0.143, w * 0.195)
@@ -28,10 +31,24 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
                     draw_area_start_x=margin_x[0],
                     font=font)
 
-    plt.imshow(bg_img)
-    plt.imshow(img)
-    plt.savefig('out/plot.png')
+    fig, axs = plt.subplots(1)
+    axs.imshow(bg_img)
+    axs.imshow(img)
+    add_legend(axs)
+
+    axs.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+    image_margin = IMG_SIZE[0] * 0.1
+    axs.set_xlim(-image_margin * 0.1, IMG_SIZE[0] + image_margin)
+    fig.savefig('out/plot.png')
     plt.show()
+
+
+def add_legend(ax: Axes):
+    ax.legend(handles=[
+        mpatches.Patch(color=CONT_BOX_COLOR['t1'], label='Type 1'),
+        mpatches.Patch(color=CONT_BOX_COLOR['t2'], label='Type 2'),
+        mpatches.Patch(color=CONT_BOX_COLOR['t3'], label='Type 3'),
+    ], loc='upper left')
 
 
 def get_container_draw_area_size(aircraft: AircraftData, draw_area_size: tuple) -> tuple:
