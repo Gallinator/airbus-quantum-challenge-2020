@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="3840"
+   height="2160"
+   viewBox="0 0 3840 2160"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4-beta (62f545b, 2024-04-22)"
+   sodipodi:docname="aircraft_bg_res.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.5543368"
+     inkscape:cx="1680.3864"
+     inkscape:cy="1100.414"
+     inkscape:window-width="3840"
+     inkscape:window-height="2030"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="fill:#ffffff;fill-opacity:1">
+    <path
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       d="M 1351.1642,880 1997.5702,0 H 2392.532 L 2321.9355,367.8417 2321.6933,880 Z"
+       id="path2"
+       sodipodi:nodetypes="cccccc"
+       inkscape:label="Wing R" />
+    <path
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       d="M 3306.8154,906.16336 3618.051,514.95161 H 3840 l -174.244,471.16744 z"
+       id="path3"
+       sodipodi:nodetypes="ccccc"
+       inkscape:label="Stab R" />
+    <path
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       d="M 3306.8154,1253.8932 3618.051,1645.105 H 3840 l -174.244,-471.1674 z"
+       id="path4"
+       sodipodi:nodetypes="ccccc"
+       inkscape:label="Stab L" />
+    <path
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       d="m 1351.1642,1280 646.406,880 H 2392.532 L 2321.9355,1792.1583 2321.6933,1280 Z"
+       id="path5"
+       sodipodi:nodetypes="cccccc"
+       inkscape:label="Wing L" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:2;stroke-dasharray:none"
+       d="M 3094,880 H 550 C 282.84968,880 0,1008.2511 0,1080 c 0,71.7489 282.37607,200 550,200 h 2544 c 119.0028,0 746,-110.2513 746,-200 0,-89.7487 -627.819,-200 -746,-200 z"
+       id="path1"
+       sodipodi:nodetypes="zzzzzzz"
+       inkscape:label="Fuselage" />
+    <path
+       style="fill:#4d4d4d;fill-opacity:1"
+       d="m 410,940 c 0,0 -105.89264,34.5257 -105.89264,140 0,105.4743 105.89264,140 105.89264,140 l -19.44321,20 c 0,0 -158.82069,-57.6624 -157.70575,-160 1.11494,-102.33759 163.11762,-160 163.11762,-160 z"
+       id="path8"
+       sodipodi:nodetypes="czcczcc"
+       inkscape:label="Windhield" />
+  </g>
+</svg>
