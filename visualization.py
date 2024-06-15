@@ -31,16 +31,33 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
                     draw_area_start_x=margin_x[0],
                     font=font)
 
-    fig, axs = plt.subplots(1)
-    axs.imshow(bg_img)
-    axs.imshow(img)
-    add_legend(axs)
+    fig, axs = plt.subplots(2, figsize=(12, 8), sharex=False, height_ratios=[4, 1])
 
-    axs.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+    axs[0].imshow(bg_img)
+    axs[0].imshow(img)
+    add_legend(axs[0])
+    axs[0].tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
     image_margin = IMG_SIZE[0] * 0.1
-    axs.set_xlim(-image_margin * 0.1, IMG_SIZE[0] + image_margin)
+    axs[0].set_xlim(-image_margin, IMG_SIZE[0] + image_margin)
+
+    plot_cg(axs[1], problem, cont_occ)
+
+    plt.tight_layout()
     fig.savefig('out/plot.png')
     plt.show()
+
+
+def plot_cg(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
+    lim = problem.aircraft.payload_area_length / 2
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(0, 2)
+    ax.tick_params(left=False, labelleft=False)
+    cg = problem.get_cg(cont_occ)
+    error = [[abs(problem.aircraft.min_cg)], [abs(problem.aircraft.max_cg)]]
+    ax.errorbar(cg, 1, xerr=error, capsize=10)
+    ax.scatter(problem.zero_payload_cg, 1, marker='x', c='black', label='Zero payload CG')
+    ax.scatter(cg, 1, marker='o', c='green', label='Actual CG')
+    ax.legend()
 
 
 def add_legend(ax: Axes):
