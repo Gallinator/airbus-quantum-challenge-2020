@@ -108,18 +108,19 @@ def draw_containers(img: Image, cont_occ: np.ndarray, problem: LoadingProblem, c
             cont_start = draw_start + cont_margin_x
             cont_label = str(problem.container_masses[c])
             cont_color = CONT_BOX_COLOR[problem.container_types[c]]
+            cont_end = cont_start + cont_area_w - 2 * cont_margin_x
 
             match problem.container_types[c]:
                 case 't1':
-                    cont_end = cont_start + cont_area_w - 2 * cont_margin_x
                     draw.rounded_rectangle([(cont_start, draw_top), (cont_end, draw_bottom)], fill=cont_color)
                     draw_text(draw, font, cont_label, cont_start, cont_end, img_center_y)
                 # Both containers in the same position are drawn
                 case 't2':
-                    cont_start = draw_start + i * (cont_area_w / 2) + cont_margin_x
-                    cont_end = cont_start + cont_area_w / 2 - 2 * cont_margin_x
-                    draw.rounded_rectangle([(cont_start, draw_top), (cont_end, draw_bottom)], fill=cont_color)
-                    draw_text(draw, font, cont_label, cont_start, cont_end, img_center_y)
+                    cont_top = draw_top + i * cont_area_h / 2
+                    cont_bottom = cont_top + cont_area_h / 2 - cont_margin_x
+                    draw.rounded_rectangle([(cont_start, cont_top), (cont_end, cont_bottom)], fill=cont_color)
+                    text_center = (cont_top+cont_bottom)/2
+                    draw_text(draw, font, cont_label, cont_start, cont_end, text_center)
                 # Assume contiguous containers
                 case 't3':
                     cont_end = cont_start + 2 * cont_area_w - 2 * cont_margin_x
