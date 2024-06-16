@@ -32,13 +32,15 @@ The ``` LoadingProblem ``` class allows to get the QUBO representation of each c
 ```python
     bqm = as_bqm(problem.get_q(), 'BINARY')
 ```
-The plot functions assume fesible solutions so first parse the solver results then remove the unfeasible solutoins. The plot the top k solutions.<br>
+The plot functions assume feasible solutions so first parse the solver results then remove the unfeasible solutoins. The plot the top k solutions.<br>
 ```python
     cont_occ_solutions = problem.parse_solution(result)
     cont_occ_solutions = problem.filter_solutions(cont_occ_solutions)
 
     plot_top_solutions(problem, cont_occ_solutions, 1)
 ```
+Plots will be saved in the ``` out ``` directory.<br><br>
+![alt text](https://github.com/Gallinator/airbus-quantum-challenge-2020/blob/master/docs/example_plot.png)
 
 ## Todo
 - [x] Payload constraints
