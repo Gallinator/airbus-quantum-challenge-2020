@@ -50,7 +50,21 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
 def plot_shear(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
     x = [-problem.aircraft.payload_area_length / 2, 0, problem.aircraft.payload_area_length / 2]
     y = [0, problem.aircraft.max_shear, 0]
-    ax.plot(x, y, c='blue', label='Max shear')
+    ax.plot(x, y, c='red', label='Max shear')
+
+    shear_l, shear_r = problem.get_shear(cont_occ)
+    x_l = problem.aircraft.location_ends[problem.aircraft.location_ends <= 0]
+    # Fill the left end of the curve
+    x_l = np.insert(x_l, 0, -problem.aircraft.payload_area_length / 2)
+    x_r = problem.aircraft.location_ends[problem.aircraft.location_ends >= 0]
+
+    # Add center location end if odd positions
+    if problem.aircraft.num_positions % 2 != 0:
+        x_l = np.concatenate([x_l, [0]])
+        x_r = np.concatenate([[0], x_r])
+
+    ax.plot(x_l, shear_l, c='green', label='Actual shear')
+    ax.plot(x_r, shear_r, c='green')
     ax.set_xlabel('x')
     ax.set_ylabel('Shear [N]')
     ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
