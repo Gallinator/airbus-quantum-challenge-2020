@@ -3,6 +3,7 @@ Implementation of the solution to the Airbus Quantum Challenge 2020 aircraft loa
 The optimization process can be run on both a simulated annealer and real D-Wave solver.<br>
 The current implementation lacks an effective strategy to tune the coefficients so a lot of runs are required.
 ## How to run
+- Install requirements ``` pip install -r requirements.txt ```
 - [Optional] Create an account at [D-Wave Leap](https://cloud.dwavesys.com/leap/signup/)
 - [Optional] Take your API key then run ``` dwave config create ```
 - Run ``` python main.py ```
