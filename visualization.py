@@ -112,26 +112,28 @@ def draw_containers(img: Image, cont_occ: np.ndarray, problem: LoadingProblem, c
 
             match problem.container_types[c]:
                 case 't1':
-                    draw.rounded_rectangle([(cont_start, draw_top), (cont_end, draw_bottom)], fill=cont_color)
-                    draw_text(draw, font, cont_label, cont_start, cont_end, img_center_y)
+                    left_top, right_bottom = (cont_start, draw_top), (cont_end, draw_bottom)
+                    draw.rounded_rectangle([left_top, right_bottom], fill=cont_color)
+                    draw_text(draw, font, cont_label, left_top, right_bottom)
                 # Both containers in the same position are drawn
                 case 't2':
                     cont_top = draw_top + i * cont_area_h / 2
                     cont_bottom = cont_top + cont_area_h / 2 - cont_margin_x
-                    draw.rounded_rectangle([(cont_start, cont_top), (cont_end, cont_bottom)], fill=cont_color)
-                    text_center = (cont_top+cont_bottom)/2
-                    draw_text(draw, font, cont_label, cont_start, cont_end, text_center)
+                    left_top, right_bottom = (cont_start, cont_top), (cont_end, cont_bottom)
+                    draw.rounded_rectangle([left_top, right_bottom], fill=cont_color)
+                    draw_text(draw, font, cont_label, left_top, right_bottom)
                 # Assume contiguous containers
                 case 't3':
                     cont_end = cont_start + 2 * cont_area_w - 2 * cont_margin_x
-                    draw.rounded_rectangle([(cont_start, draw_top), (cont_end, draw_bottom)], fill=cont_color)
-                    draw_text(draw, font, cont_label, cont_start, cont_end, img_center_y)
+                    left_top, right_bottom = (cont_start, draw_top), (cont_end, draw_bottom)
+                    draw.rounded_rectangle([left_top, right_bottom], fill=cont_color)
+                    draw_text(draw, font, cont_label, left_top, right_bottom)
                     pos_increase = 2
 
         next_draw_start_x = draw_end
         pos += pos_increase
 
 
-def draw_text(draw: ImageDraw.Draw, font, text: str, cont_start, cont_end, center_y):
-    txt_pos = ((cont_start + cont_end) / 2, center_y)
+def draw_text(draw: ImageDraw.Draw, font, text: str, cont_left_top: tuple, cont_right_bottom: tuple):
+    txt_pos = ((cont_left_top[0] + cont_right_bottom[0]) / 2, (cont_left_top[1] + cont_right_bottom[1]) / 2)
     draw.text(txt_pos, text, font=font, fill=TEXT_COLOR, anchor='mm')
