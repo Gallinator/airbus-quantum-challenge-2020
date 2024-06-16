@@ -30,7 +30,7 @@ def plot_solution(title: str, problem: LoadingProblem, cont_occ: np.ndarray, out
                     draw_area_start_x=margin_x[0],
                     font=font)
 
-    fig, axs = plt.subplots(3, figsize=(7, 7), sharex=False, height_ratios=[4, 1, 2])
+    fig, axs = plt.subplots(3, figsize=(7, 8), sharex=False, height_ratios=[4, 1, 2])
     fig.suptitle(title)
 
     axs[0].imshow(bg_img)
