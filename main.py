@@ -10,6 +10,7 @@ from loading_problem import LoadingProblem, get_num_slack_vars
 from raw_functions import no_overlaps_penalty, objective_f, maximum_capacity_penalty, no_duplicates_penalty, \
     contiguity_penalty
 from utils import ResultThread
+from visualization import plot_solution
 
 
 def get_tuned_coefs(data_gen: DataGenerator) -> dict:
@@ -63,10 +64,16 @@ def main():
     cont_occ_solutions = problem.parse_solution(result)
     cont_occ_solutions = problem.filter_solutions(cont_occ_solutions)
 
-    print(cont_occ_solutions)
+    plot_top_solutions(problem, cont_occ_solutions, 1)
 
-    payloads = [problem.get_payload_weight(o) for o in cont_occ_solutions]
-    print(payloads)
+
+def plot_top_solutions(problem: LoadingProblem, solutions_occ, k: int):
+    payloads = [problem.get_payload_weight(o) for o in solutions_occ]
+    indices = np.flip(np.argsort(payloads))
+    indices = indices[:k]
+    for i, sol_i in enumerate(indices):
+        path = f'out/solution_{i + 1}.png'
+        plot_solution(f'Solution payload {int(payloads[i])} kg', problem, solutions_occ[sol_i], path)
 
 
 if __name__ == '__main__':
