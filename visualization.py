@@ -13,11 +13,11 @@ TEXT_COLOR = '#151e0b'
 IMG_SIZE = (3840, 2160)
 
 
-def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
+def plot_solution(title: str, problem: LoadingProblem, cont_occ: np.ndarray, out_path: str):
     Path('out').mkdir(exist_ok=True)
-    cairosvg.svg2png(url='resources/aircraft_bg_res.svg', write_to='out/plot.png', output_width=IMG_SIZE[0],
+    cairosvg.svg2png(url='resources/aircraft_bg_res.svg', write_to=out_path, output_width=IMG_SIZE[0],
                      output_height=IMG_SIZE[1])
-    bg_img = Image.open('out/plot.png')
+    bg_img = Image.open(out_path)
     img = Image.new(mode='RGBA', size=IMG_SIZE, color='#FFFFFF00')
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", int(img.size[1] * 0.05))
     w, h = img.size
@@ -31,6 +31,7 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
                     font=font)
 
     fig, axs = plt.subplots(3, figsize=(7, 7), sharex=False, height_ratios=[4, 1, 2])
+    fig.suptitle(title)
 
     axs[0].imshow(bg_img)
     axs[0].imshow(img)
@@ -43,7 +44,7 @@ def plot_solution(problem: LoadingProblem, cont_occ: np.ndarray):
     plot_shear(axs[2], problem, cont_occ)
 
     plt.tight_layout()
-    fig.savefig('out/plot.png')
+    fig.savefig(out_path)
     plt.show()
 
 
