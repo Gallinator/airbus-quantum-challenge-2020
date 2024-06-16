@@ -143,6 +143,7 @@ def draw_containers(img: Image, cont_occ: np.ndarray, problem: LoadingProblem, c
                     left_top, right_bottom = (cont_start, draw_top), (cont_end, draw_bottom)
                     draw.rounded_rectangle([left_top, right_bottom], fill=cont_color)
                     draw_text(draw, font, cont_label, left_top, right_bottom)
+                    draw_end = cont_end + cont_margin_x
                     pos_increase = 2
 
         next_draw_start_x = draw_end
