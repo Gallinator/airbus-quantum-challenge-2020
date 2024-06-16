@@ -1,6 +1,5 @@
 # Airbus Quantum Computing Challenge 2020
-Implementation of the solution to the Airbus Quantum Challenge 2020 aircraft loading problem.<br>
-Based on [Aircraft Loading Optimization -- QUBO models under multiple constraints](https://arxiv.org/abs/2102.09621).<br>
+Implementation of the solution to the Airbus Quantum Challenge 2020 aircraft loading problem proposed in [Aircraft Loading Optimization -- QUBO models under multiple constraints](https://arxiv.org/abs/2102.09621).<br>
 The optimization process can be run on both a simulated annealer and real D-Wave solver.<br>
 The current implementation lacks an effective strategy to tune the coefficients so a lot of runs are required.
 ## How to run
