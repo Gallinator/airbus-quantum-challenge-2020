@@ -42,7 +42,8 @@ def main():
 
         sampler = DWaveSampler(solver=solver.id)
         sampler_embedding = EmbeddingComposite(sampler)
-        result = sampler_embedding.sample(bqm, num_reads=100, label=label).aggregate()
+        chain_str = max(np.abs(np.fromiter(problem.get_q().values(), dtype=float))) * 1.5
+        result = sampler_embedding.sample(bqm, num_reads=1000, label=label, chain_strength=chain_str).aggregate()
     else:
         sampler = SimulatedAnnealingSampler()
         result = sampler.sample(bqm, num_reads=1000).aggregate()
