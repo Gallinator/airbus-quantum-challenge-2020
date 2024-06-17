@@ -40,7 +40,7 @@ def main():
     coefs = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, get_num_slack_vars(acft, len(cont_types))))
 
     # Solve
-    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, coefs)
+    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05, coefs)
     bqm = as_bqm(problem.get_q(), 'BINARY')
 
     if use_real_sampler:
