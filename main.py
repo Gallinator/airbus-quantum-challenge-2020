@@ -5,28 +5,17 @@ from dwave.samplers import SimulatedAnnealingSampler
 from dwave.system import DWaveSampler, EmbeddingComposite
 
 from aircraft_data import AircraftData
-from coefficient_tuning import DataGenerator, tune_coef
-from loading_problem import LoadingProblem, get_num_slack_vars
-from raw_functions import no_overlaps_penalty, objective_f, maximum_capacity_penalty, no_duplicates_penalty, \
-    contiguity_penalty
-from utils import ResultThread
+from coefficient_tuning import get_coef
+from loading_problem import LoadingProblem
 from visualization import plot_solution
 
 
-def get_tuned_coefs(data_gen: DataGenerator) -> dict:
+def get_tuned_coefs(problem: LoadingProblem) -> dict:
     coefs = {}
-    pl_o_job = ResultThread(target=tune_coef, args=(data_gen, 2000, objective_f, no_overlaps_penalty,))
-    pl_w_job = ResultThread(target=tune_coef, args=(data_gen, 2000, objective_f, maximum_capacity_penalty,))
-    pl_d_job = ResultThread(target=tune_coef, args=(data_gen, 2000, objective_f, no_duplicates_penalty,))
-    pl_c_job = ResultThread(target=tune_coef, args=(data_gen, 2000, objective_f, contiguity_penalty,))
-    pl_o_job.start()
-    pl_w_job.start()
-    pl_d_job.start()
-    pl_c_job.start()
-    coefs['pl_o'] = pl_o_job.get_result()
-    coefs['pl_w'] = pl_w_job.get_result()
-    coefs['pl_d'] = pl_d_job.get_result()
-    coefs['pl_c'] = pl_c_job.get_result()
+    coefs['pl_o'] = get_coef(problem.get_q(), problem.get_no_overlaps_q())
+    coefs['pl_w'] = get_coef(problem.get_q(), problem.get_max_capacity_q())
+    coefs['pl_d'] = get_coef(problem.get_q(), problem.get_no_duplicates())
+    coefs['pl_c'] = get_coef(problem.get_q(), problem.get_contiguity())
     return coefs
 
 
@@ -38,7 +27,8 @@ def main():
 
     # Solve
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
-    problem.coefficients = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, get_num_slack_vars(acft, len(cont_types))))
+    problem.coefficients = get_tuned_coefs(problem)
+
     bqm = as_bqm(problem.get_q(), 'BINARY')
 
     if use_real_sampler:
