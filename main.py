@@ -36,11 +36,9 @@ def main():
     cont_types = np.array(['t1', 't1', 't1', 't1', 't1', 't1'])
     cont_masses = np.array([2134, 3455, 1866, 1699, 3500, 3332])
 
-    # Tuning
-    coefs = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, get_num_slack_vars(acft, len(cont_types))))
-
     # Solve
-    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05, coefs)
+    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
+    problem.coefficients = get_tuned_coefs(DataGenerator(acft, cont_masses, cont_types, get_num_slack_vars(acft, len(cont_types))))
     bqm = as_bqm(problem.get_q(), 'BINARY')
 
     if use_real_sampler:
