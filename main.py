@@ -62,6 +62,8 @@ def main():
     cont_occ_solutions = problem.parse_solution(result)
     cont_occ_solutions = problem.filter_solutions(cont_occ_solutions)
 
+    print(f'{len(cont_occ_solutions)} feasible solutions found')
+
     plot_top_solutions(problem, cont_occ_solutions, 1)
 
 
