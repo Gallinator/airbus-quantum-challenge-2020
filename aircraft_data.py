@@ -9,13 +9,13 @@ class AircraftData:
         self.max_shear = max_shear
         self.min_cg = min_cg * payload_area_length
         self.max_cg = max_cg * payload_area_length
-        self.locations = self.get_locations()
-        self.location_ends = self.get_location_ends()
+        self.locations = self._get_locations()
+        self.location_ends = self._get_location_ends()
 
         if min_cg > max_cg:
             raise ValueError(f'Invalid cg limits ({min_cg}>{max_cg})')
 
-    def get_locations(self) -> np.ndarray:
+    def _get_locations(self) -> np.ndarray:
         pos = []
         for i in range(self.num_positions):
             x_i = (self.payload_area_length / self.num_positions *
@@ -24,7 +24,7 @@ class AircraftData:
             pos.append(x_i)
         return np.array(pos)
 
-    def get_location_ends(self) -> np.ndarray:
+    def _get_location_ends(self) -> np.ndarray:
         pos = []
         for u in range(self.num_positions):
             x_u = self.payload_area_length / self.num_positions * ((u + 1) - self.num_positions / 2)
