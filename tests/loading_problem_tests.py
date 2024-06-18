@@ -1,9 +1,10 @@
 import unittest
 
 import numpy as np
+from dimod import BQM
 
 from aircraft_data import get_default_aircraft, AircraftData
-from loading_problem import LoadingProblem
+from loading_problem import LoadingProblem, get_squared_bqm
 
 
 class LoadingProblemTests(unittest.TestCase):
@@ -225,3 +226,13 @@ class LoadingProblemTests(unittest.TestCase):
             [0, 1, 0]])
 
         self.assertEqual(problem.get_payload_weight(cont_occ), 40)
+
+    def test_get_squared_bqm(self):
+        var_names = ['x1', 'x2']
+        var_coefs = [2.0, -1.0]
+        offset = -10.0
+
+        true_qbm = BQM.from_qubo({('x1', 'x1'): -36.0,
+                                  ('x2', 'x2'): 21.0,
+                                  ('x1', 'x2'): -4.0}, 100.0)
+        self.assertEqual(true_qbm, get_squared_bqm(var_names, var_coefs, offset))
