@@ -1,7 +1,7 @@
 import math
 from functools import reduce
 import numpy as np
-from dimod import SampleSet, BQM, Binaries
+from dimod import SampleSet, BQM, Binaries, Binary
 
 from aircraft_data import AircraftData
 from utils import get_container_t, get_container_d
@@ -30,13 +30,12 @@ class LoadingProblem:
         self.coefficients = {'pl_o': 1.0, 'pl_w': 1.0, 'pl_d': 1.0, 'pl_c': 1.0}
         self.num_slack_variables = get_num_slack_vars(aircraft, len(container_types))
 
-    def get_objective_q(self) -> dict:
-        q = {}
-
+    def get_objective_bqm(self) -> BQM:
+        bqm = BQM.empty('BINARY')
         for i, t_i in enumerate(self.container_t):
             for pos in range(self.aircraft.num_positions):
-                q[(f'p_{i}_{pos}', f'p_{i}_{pos}')] = -t_i * self.container_masses[i]
-        return q
+                bqm += Binary(f'p_{i}_{pos}', -t_i * self.container_masses[i])
+        return bqm
 
     def get_no_overlaps_q(self) -> dict:
         num_slack = self.num_slack_variables['pl_o'] // self.aircraft.num_positions
@@ -143,7 +142,7 @@ class LoadingProblem:
         return q
 
     def get_q(self) -> dict:
-        obj_q = self.get_objective_q()
+        obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_q()
         no_duplicates_q = self.get_no_duplicates()
         max_capacity_q = self.get_max_capacity_q()
