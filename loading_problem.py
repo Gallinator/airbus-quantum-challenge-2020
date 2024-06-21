@@ -72,21 +72,24 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_d'])
         return bqm
 
-    def get_contiguity(self) -> dict:
-        q = {}
+    def get_contiguity_bqm(self) -> BQM:
+        bqm = BQM.empty('BINARY')
+
         for i, t_i in enumerate(self.container_t):
-            q_c = {}
+            cont_bqm = BQM.empty('BINARY')
             # Not a type 3 container
             if t_i >= 1:
                 continue
             else:
                 for pos in range(self.aircraft.num_positions - 1):
-                    q_c[(f'p_{i}_{pos}', f'p_{i}_{pos}')] = 1 / 2
-                    q_c[(f'p_{i}_{pos}', f'p_{i}_{pos + 1}')] = -1
-                q[(f'p_{i}_{self.aircraft.num_positions - 1}', f'p_{i}_{self.aircraft.num_positions - 1}')] = 1 / 2
-                q = merge_q([q, q_c])
-        q = adjust_with_coef(q, self.coefficients['pl_c'])
-        return q
+                    actual_p = Binary(f'p_{i}_{pos}')
+                    next_p = Binary(f'p_{i}_{pos + 1}')
+                    cont_bqm += 1 / 2 * actual_p - (actual_p * next_p)
+                cont_bqm += Binary(f'p_{i}_{self.aircraft.num_positions - 1}', 1 / 2)
+                bqm.update(cont_bqm)
+
+        bqm.scale(self.coefficients['pl_c'])
+        return bqm
 
     def get_max_capacity_q(self) -> dict:
         num_slack = self.num_slack_variables['pl_w']
@@ -126,7 +129,7 @@ class LoadingProblem:
         no_overlaps_q = self.get_no_overlaps_bqm()
         no_duplicates_q = self.get_no_duplicates_bqm()
         max_capacity_q = self.get_max_capacity_q()
-        contiguity_q = self.get_contiguity()
+        contiguity_q = self.get_contiguity_bqm()
         return merge_q([obj_q, no_overlaps_q, no_duplicates_q, max_capacity_q, contiguity_q])
 
     def parse_solution(self, results: SampleSet) -> np.ndarray:

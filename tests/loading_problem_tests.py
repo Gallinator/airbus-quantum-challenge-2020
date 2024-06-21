@@ -77,14 +77,14 @@ class LoadingProblemTests(unittest.TestCase):
         cont_masses = np.array([100, 100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
 
-        true_q = {('p_1_0', 'p_1_0'): 1 / 2,
-                  ('p_1_1', 'p_1_1'): 1 / 2,
-                  ('p_1_0', 'p_1_1'): -1,
-                  ('p_2_0', 'p_2_0'): 1 / 2,
-                  ('p_2_1', 'p_2_1'): 1 / 2,
-                  ('p_2_0', 'p_2_1'): -1}
+        true_q = BQM.from_qubo({('p_1_0', 'p_1_0'): 1 / 2,
+                                ('p_1_1', 'p_1_1'): 1 / 2,
+                                ('p_1_0', 'p_1_1'): -1,
+                                ('p_2_0', 'p_2_0'): 1 / 2,
+                                ('p_2_1', 'p_2_1'): 1 / 2,
+                                ('p_2_0', 'p_2_1'): -1})
 
-        self.assertEqual(problem.get_contiguity(), true_q)
+        self.assertEqual(problem.get_contiguity_bqm(), true_q)
 
     def test_max_capacity_q(self):
         acft = AircraftData(2, 10, 1, 0, 0, 0)
