@@ -91,44 +91,25 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_c'])
         return bqm
 
-    def get_max_capacity_q(self) -> dict:
+    def get_max_capacity_bqm(self) -> BQM:
         num_slack = self.num_slack_variables['pl_w']
-        q = {}
+        bqm = BQM.empty('BINARY')
         for i, t_i in enumerate(self.container_t):
             for pos in range(self.aircraft.num_positions):
                 coef = t_i * self.container_masses[i]
-                q[f'p_{i}_{pos}', f'p_{i}_{pos}'] = (coef ** 2) - 2 * self.aircraft.max_payload * coef
+                bqm += Binary(f'p_{i}_{pos}', coef)
         for k in range(num_slack):
-            q[(f'v_w_{k}', f'v_w_{k}')] = (2 ** (2 * k)) - (2 ** (k + 1)) * self.aircraft.max_payload
-
-        # p_i_j by expanding the double sum
-        num_cont = len(self.container_t)
-        num_pos = self.aircraft.num_positions
-        for i_expanded in range(num_pos * num_cont):
-            i = i_expanded // num_pos
-            pos_i = i_expanded - num_pos * i
-            for k_expanded in range(i_expanded):
-                k = k_expanded // num_pos
-                pos_k = k_expanded - num_pos * k
-                q[f'p_{k}_{pos_k}', f'p_{i}_{pos_i}'] = 2 * (self.container_t[i] * self.container_masses[i] *
-                                                             self.container_t[k] * self.container_masses[k])
-
-        for k in range(num_slack):
-            for j in range(k):
-                q[f'v_w_{j}', f'v_w_{k}'] = (2 ** (k + j + 1))
-            for i_expanded in range(num_pos * num_cont):
-                i = i_expanded // num_pos
-                pos = i_expanded - i * num_pos
-                q[f'p_{i}_{pos}', f'v_w_{k}'] = self.container_t[i] * self.container_masses[i] * (2 ** (k + 1))
-
-        q = adjust_with_coef(q, self.coefficients['pl_w'])
-        return q
+            bqm += Binary(f'v_w_{k}', 2 ** k)
+        bqm += -self.aircraft.max_payload
+        bqm = bqm ** 2
+        bqm.scale(self.coefficients['pl_w'])
+        return bqm
 
     def get_q(self) -> dict:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
         no_duplicates_q = self.get_no_duplicates_bqm()
-        max_capacity_q = self.get_max_capacity_q()
+        max_capacity_q = self.get_max_capacity_bqm()
         contiguity_q = self.get_contiguity_bqm()
         return merge_q([obj_q, no_overlaps_q, no_duplicates_q, max_capacity_q, contiguity_q])
 

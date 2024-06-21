@@ -92,23 +92,23 @@ class LoadingProblemTests(unittest.TestCase):
         cont_masses = np.array([10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
 
-        true_q = {('p_0_0', 'p_0_0'): 80,
-                  ('p_0_1', 'p_0_1'): 80,
-                  ('p_1_0', 'p_1_0'): 15,
-                  ('p_1_1', 'p_1_1'): 15,
-                  ('v_w_0', 'v_w_0'): -1,
-                  ('p_0_0', 'p_0_1'): 200,
-                  ('p_0_0', 'p_1_0'): 100,
-                  ('p_0_1', 'p_1_0'): 100,
-                  ('p_0_0', 'p_1_1'): 100,
-                  ('p_0_1', 'p_1_1'): 100,
-                  ('p_1_0', 'p_1_1'): 50,
-                  ('p_0_0', 'v_w_0'): 20,
-                  ('p_0_1', 'v_w_0'): 20,
-                  ('p_1_0', 'v_w_0'): 10,
-                  ('p_1_1', 'v_w_0'): 10}
+        true_q = BQM.from_qubo({('p_0_0', 'p_0_0'): 80,
+                                ('p_0_1', 'p_0_1'): 80,
+                                ('p_1_0', 'p_1_0'): 15,
+                                ('p_1_1', 'p_1_1'): 15,
+                                ('v_w_0', 'v_w_0'): -1,
+                                ('p_0_0', 'p_0_1'): 200,
+                                ('p_0_0', 'p_1_0'): 100,
+                                ('p_0_1', 'p_1_0'): 100,
+                                ('p_0_0', 'p_1_1'): 100,
+                                ('p_0_1', 'p_1_1'): 100,
+                                ('p_1_0', 'p_1_1'): 50,
+                                ('p_0_0', 'v_w_0'): 20,
+                                ('p_0_1', 'v_w_0'): 20,
+                                ('p_1_0', 'v_w_0'): 10,
+                                ('p_1_1', 'v_w_0'): 10}, 1)
 
-        self.assertEqual(problem.get_max_capacity_q(), true_q)
+        self.assertEqual(problem.get_max_capacity_bqm(), true_q)
 
     def test_check_overlap_constraint_true(self):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
