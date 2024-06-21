@@ -238,22 +238,3 @@ def get_num_slack_vars(aircraft: AircraftData, num_containers: int) -> dict:
         'pl_d': num_containers,
         'pl_w': math.floor(math.log2(aircraft.max_payload)) + 1
     }
-
-
-def q_reducer(accumulator, element):
-    for key, value in element.items():
-        s = accumulator.get(key, 0) + value
-        if s != 0:
-            accumulator[key] = s
-    return accumulator
-
-
-def merge_q(q: list):
-    return reduce(q_reducer, q, {})
-
-
-def adjust_with_coef(q: dict, coef: float) -> dict:
-    res = q.copy()
-    for k in q.keys():
-        res[k] *= coef
-    return res
