@@ -35,20 +35,20 @@ class LoadingProblemTests(unittest.TestCase):
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
 
-        true_q = {('p_0_0', 'p_1_0'): 2,
-                  ('p_0_0', 'v_o_0_0'): 2,
-                  ('p_1_0', 'v_o_0_0'): 2,
-                  ('p_0_0', 'p_0_0'): -1,
-                  ('p_1_0', 'p_1_0'): -1,
-                  ('v_o_0_0', 'v_o_0_0'): -1,
-                  ('p_0_1', 'p_1_1'): 2,
-                  ('p_0_1', 'v_o_1_0'): 2,
-                  ('p_1_1', 'v_o_1_0'): 2,
-                  ('p_0_1', 'p_0_1'): -1,
-                  ('p_1_1', 'p_1_1'): -1,
-                  ('v_o_1_0', 'v_o_1_0'): -1}
+        true_q = BQM.from_qubo({('p_0_0', 'p_1_0'): 2,
+                                ('p_0_0', 'v_o_0_0'): 2,
+                                ('p_1_0', 'v_o_0_0'): 2,
+                                ('p_0_0', 'p_0_0'): -1,
+                                ('p_1_0', 'p_1_0'): -1,
+                                ('v_o_0_0', 'v_o_0_0'): -1,
+                                ('p_0_1', 'p_1_1'): 2,
+                                ('p_0_1', 'v_o_1_0'): 2,
+                                ('p_1_1', 'v_o_1_0'): 2,
+                                ('p_0_1', 'p_0_1'): -1,
+                                ('p_1_1', 'p_1_1'): -1,
+                                ('v_o_1_0', 'v_o_1_0'): -1}, 2)
 
-        self.assertEqual(problem.get_no_overlaps_q(), true_q)
+        self.assertEqual(problem.get_no_overlaps_bqm(), true_q)
 
     def test_no_duplicates_q(self):
         acft = AircraftData(2, 10, 1, 0, 0, 0)

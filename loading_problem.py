@@ -37,35 +37,22 @@ class LoadingProblem:
                 bqm += Binary(f'p_{i}_{pos}', -t_i * self.container_masses[i])
         return bqm
 
-    def get_no_overlaps_q(self) -> dict:
+    def get_no_overlaps_bqm(self) -> BQM:
         num_slack = self.num_slack_variables['pl_o'] // self.aircraft.num_positions
-        q = {}
-        # Calculate q for all positions
+        bqm = BQM.empty('BINARY')
+
         for pos in range(self.aircraft.num_positions):
-            q_pos = {}
-            # Quadratic terms with minus one
-            for i, _ in enumerate(self.container_d):
-                q_pos[(f'p_{i}_{pos}', f'p_{i}_{pos}')] = (self.container_d[i] ** 2) - 2 * self.container_d[i]
+            bqm_pos = BQM.empty('BINARY')
+            for i, d_i in enumerate(self.container_d):
+                bqm_pos += Binary(f'p_{i}_{pos}', d_i)
+            for k in range(num_slack):
+                bqm_pos += Binary(f'v_o_{pos}_{k}', 2 ** k)
+            bqm_pos += -1
+            bqm_pos = bqm_pos ** 2
+            bqm.update(bqm_pos)
 
-            for i in range(num_slack):
-                q_pos[(f'v_o_{pos}_{i}', f'v_o_{pos}_{i}')] = (2 ** (2 * i)) - 2 * (2 ** i)
-
-            # Right element fixed, add all combinations of p_i_j variables
-            for i, _ in enumerate(self.container_d):
-                for k in range(i):
-                    q_pos[(f'p_{k}_{pos}', f'p_{i}_{pos}')] = 2 * self.container_d[i] * self.container_d[k]
-
-            # Slack variables
-            for i in range(num_slack):
-                for k in range(i):
-                    q_pos[(f'v_o_{pos}_{k}', f'v_o_{pos}_{i}')] = (2 ** (i + k + 1))
-                for k, _ in enumerate(self.container_d):
-                    q_pos[(f'p_{k}_{pos}', f'v_o_{pos}_{i}')] = 2 * self.container_d[k] * (2 ** i)
-
-            q = merge_q([q, q_pos])
-
-        q = adjust_with_coef(q, self.coefficients['pl_o'])
-        return q
+        bqm.scale(self.coefficients['pl_o'])
+        return bqm
 
     def get_no_duplicates(self) -> dict:
         num_slack = self.num_slack_variables['pl_d'] // len(self.container_types)
@@ -143,7 +130,7 @@ class LoadingProblem:
 
     def get_q(self) -> dict:
         obj_q = self.get_objective_bqm()
-        no_overlaps_q = self.get_no_overlaps_q()
+        no_overlaps_q = self.get_no_overlaps_bqm()
         no_duplicates_q = self.get_no_duplicates()
         max_capacity_q = self.get_max_capacity_q()
         contiguity_q = self.get_contiguity()
