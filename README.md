@@ -22,13 +22,13 @@ Define the penalty functions coefficients as a ``` dict ```<br>
     coefs = {'pl_o': 1.0,
              'pl_w': 1.0,
              'pl_d': 1.0,
-             'pl_c': 0.}
+             'pl_c': 1.0}
 ```
 Finally create a new ``` LoadingProblem ```<br>
 ```python
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05, coefs)
 ```
-The ``` LoadingProblem ``` class allows to get the QUBO representation of each constraint as well as the total problem to pass to the solver.For example to create a BQM to pass to the soilvers use<br>
+The ``` LoadingProblem ``` class allows to get the BQM representation of each constraint as well as the total problem to pass to the solver. For example to create a BQM to pass to the solvers use<br>
 
 ```python
     bqm = problem.get_bqm()
