@@ -257,11 +257,3 @@ def adjust_with_coef(q: dict, coef: float) -> dict:
     for k in q.keys():
         res[k] *= coef
     return res
-
-
-def get_squared_bqm(var_names: list[str], var_coefs: list[float], offset: float) -> BQM:
-    variables = Binaries(var_names)
-    sum_bqm = BQM.empty('BINARY')
-    for var, coef in zip(variables, var_coefs):
-        sum_bqm = sum_bqm + coef * var
-    return (sum_bqm + offset) ** 2

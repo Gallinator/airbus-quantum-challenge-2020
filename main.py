@@ -12,10 +12,10 @@ from visualization import plot_solution
 
 def get_tuned_coefs(problem: LoadingProblem) -> dict:
     coefs = {}
-    coefs['pl_o'] = get_coef(problem.get_q(), problem.get_no_overlaps_q())
-    coefs['pl_w'] = get_coef(problem.get_q(), problem.get_max_capacity_q())
-    coefs['pl_d'] = get_coef(problem.get_q(), problem.get_no_duplicates())
-    coefs['pl_c'] = get_coef(problem.get_q(), problem.get_contiguity())
+    coefs['pl_o'] = get_coef(problem.get_q(), problem.get_no_overlaps_bqm())
+    coefs['pl_w'] = get_coef(problem.get_q(), problem.get_max_capacity_bqm())
+    coefs['pl_d'] = get_coef(problem.get_q(), problem.get_no_duplicates_bqm())
+    coefs['pl_c'] = get_coef(problem.get_q(), problem.get_contiguity_bqm())
     return coefs
 
 
