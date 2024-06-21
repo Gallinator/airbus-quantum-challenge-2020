@@ -29,7 +29,7 @@ def main():
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
     problem.coefficients = get_tuned_coefs(problem)
 
-    bqm = as_bqm(problem.get_q(), 'BINARY')
+    bqm = problem.get_bqm()
 
     if use_real_sampler:
         with Client.from_config() as client:
@@ -42,7 +42,7 @@ def main():
 
         sampler = DWaveSampler(solver=solver.id)
         sampler_embedding = EmbeddingComposite(sampler)
-        chain_str = max(np.abs(np.fromiter(problem.get_q().to_qubo()[0].values(), dtype=float))) * 1.5
+        chain_str = max(np.abs(np.fromiter(bqm.to_qubo()[0].values(), dtype=float))) * 1.5
         result = sampler_embedding.sample(bqm, num_reads=1000, label=label, chain_strength=chain_str).aggregate()
     else:
         sampler = SimulatedAnnealingSampler()

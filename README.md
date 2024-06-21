@@ -29,8 +29,9 @@ Finally create a new ``` LoadingProblem ```<br>
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05, coefs)
 ```
 The ``` LoadingProblem ``` class allows to get the QUBO representation of each constraint as well as the total problem to pass to the solver.For example to create a BQM to pass to the soilvers use<br>
+
 ```python
-    bqm = as_bqm(problem.get_q(), 'BINARY')
+    bqm = problem.get_bqm()
 ```
 The plot functions assume feasible solutions so first parse the solver results then remove the unfeasible solutoins. The plot the top k solutions.<br>
 ```python

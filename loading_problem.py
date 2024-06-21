@@ -105,7 +105,7 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_w'])
         return bqm
 
-    def get_q(self) -> BQM:
+    def get_bqm(self) -> BQM:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
         no_duplicates_q = self.get_no_duplicates_bqm()
