@@ -49,7 +49,7 @@ class LoadingProblem:
                 bqm_pos += Binary(f'v_o_{pos}_{k}', 2 ** k)
             bqm_pos += -1
             bqm_pos = bqm_pos ** 2
-            bqm.update(bqm_pos)
+            bqm += bqm_pos
 
         bqm.scale(self.coefficients['pl_o'])
         return bqm
@@ -67,7 +67,7 @@ class LoadingProblem:
                 cont_bqm += Binary(f'v_d_{c}_{k}', 2 ** k)
             cont_bqm += -1
             cont_bqm = cont_bqm ** 2
-            bqm.update(cont_bqm)
+            bqm += cont_bqm
 
         bqm.scale(self.coefficients['pl_d'])
         return bqm
@@ -86,7 +86,7 @@ class LoadingProblem:
                     next_p = Binary(f'p_{i}_{pos + 1}')
                     cont_bqm += 1 / 2 * actual_p - (actual_p * next_p)
                 cont_bqm += Binary(f'p_{i}_{self.aircraft.num_positions - 1}', 1 / 2)
-                bqm.update(cont_bqm)
+                bqm += cont_bqm
 
         bqm.scale(self.coefficients['pl_c'])
         return bqm
