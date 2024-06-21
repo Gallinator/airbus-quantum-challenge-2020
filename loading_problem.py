@@ -105,13 +105,13 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_w'])
         return bqm
 
-    def get_q(self) -> dict:
+    def get_q(self) -> BQM:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
         no_duplicates_q = self.get_no_duplicates_bqm()
         max_capacity_q = self.get_max_capacity_bqm()
         contiguity_q = self.get_contiguity_bqm()
-        return merge_q([obj_q, no_overlaps_q, no_duplicates_q, max_capacity_q, contiguity_q])
+        return obj_q + no_overlaps_q + no_duplicates_q + max_capacity_q + contiguity_q
 
     def parse_solution(self, results: SampleSet) -> np.ndarray:
         solutions = []
