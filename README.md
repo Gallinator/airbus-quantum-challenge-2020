@@ -24,9 +24,10 @@ Define the penalty functions coefficients as a ``` dict ```<br>
              'pl_d': 1.0,
              'pl_c': 1.0}
 ```
-Finally create a new ``` LoadingProblem ```<br>
+Finally create a new ``` LoadingProblem ``` and set its coefficients<br>
 ```python
-    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05, coefs)
+    problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
+    problem.coefficients = coefs
 ```
 The ``` LoadingProblem ``` class allows to get the BQM representation of each constraint as well as the total problem to pass to the solver. For example to create a BQM to pass to the solvers use<br>
 
