@@ -54,30 +54,23 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_o'])
         return bqm
 
-    def get_no_duplicates(self) -> dict:
+    def get_no_duplicates_bqm(self) -> BQM:
         num_slack = self.num_slack_variables['pl_d'] // len(self.container_types)
-        q = {}
+        bqm = BQM.empty('BINARY')
 
         for c, t_i in enumerate(self.container_t):
-            q_c = {}
+            cont_bqm = BQM.empty('BINARY')
             # Quadratic terms
             for pos in range(self.aircraft.num_positions):
-                q_c[(f'p_{c}_{pos}', f'p_{c}_{pos}')] = (t_i ** 2) - 2 * t_i
+                cont_bqm += Binary(f'p_{c}_{pos}', t_i)
             for k in range(num_slack):
-                q_c[(f'v_d_{c}_{k}', f'v_d_{c}_{k}')] = (2 ** (2 * k)) - 2 * (2 ** k)
+                cont_bqm += Binary(f'v_d_{c}_{k}', 2 ** k)
+            cont_bqm += -1
+            cont_bqm = cont_bqm ** 2
+            bqm.update(cont_bqm)
 
-            # Right element fixed, add all combinations of p_i_j variables
-            for pos in range(self.aircraft.num_positions):
-                for k in range(pos):
-                    q_c[(f'p_{c}_{k}', f'p_{c}_{pos}')] = 2 * t_i * t_i
-            for k in range(num_slack):
-                for j in range(self.aircraft.num_positions):
-                    q_c[(f'p_{c}_{j}', f'v_d_{c}_{k}')] = 2 * (2 ** k) * t_i
-                for j in range(k):
-                    q_c[(f'v_d_{c}_{j}', f'v_d_{c}_{k}')] = (2 ** (j + k + 1))
-            q = merge_q([q, q_c])
-        q = adjust_with_coef(q, self.coefficients['pl_d'])
-        return q
+        bqm.scale(self.coefficients['pl_d'])
+        return bqm
 
     def get_contiguity(self) -> dict:
         q = {}
@@ -131,7 +124,7 @@ class LoadingProblem:
     def get_q(self) -> dict:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
-        no_duplicates_q = self.get_no_duplicates()
+        no_duplicates_q = self.get_no_duplicates_bqm()
         max_capacity_q = self.get_max_capacity_q()
         contiguity_q = self.get_contiguity()
         return merge_q([obj_q, no_overlaps_q, no_duplicates_q, max_capacity_q, contiguity_q])
