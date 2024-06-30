@@ -27,7 +27,7 @@ class LoadingProblem:
         self.zero_payload_cg = zero_payload_cg * aircraft.payload_area_length
         self.container_t = get_container_t(container_types)
         self.container_d = get_container_d(container_types)
-        self.coefficients = {'pl_o': 1.0, 'pl_w': 1.0, 'pl_d': 1.0, 'pl_c': 1.0}
+        self.coefficients = {'pl_o': 1.0, 'pl_w': 1.0, 'pl_d': 1.0, 'pl_c': 1.0, 'cl_t': 1.0, 'cl_u': 1.0, 'cl_l': 1.0}
         self.num_slack_variables = get_num_slack_vars(aircraft, len(container_types))
 
     def get_objective_bqm(self) -> BQM:
