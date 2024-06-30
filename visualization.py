@@ -80,7 +80,7 @@ def plot_cg(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
     cg = problem.get_cg(cont_occ)
     error = [[abs(problem.aircraft.min_cg)], [abs(problem.aircraft.max_cg)]]
     ax.set_xlabel('x')
-    ax.errorbar(cg, 1, xerr=error, capsize=10)
+    ax.errorbar(0, 1, xerr=error, capsize=10)
     ax.scatter(problem.target_cg, 1, marker='x', c='black', label='Target CG')
     ax.scatter(cg, 1, marker='o', c='green', label='Actual CG')
     ax.legend()
