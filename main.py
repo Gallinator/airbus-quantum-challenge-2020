@@ -64,7 +64,7 @@ def plot_top_solutions(problem: LoadingProblem, solutions_occ, k: int):
     indices = indices[:k]
     for i, sol_i in enumerate(indices):
         path = f'out/solution_{i + 1}.png'
-        plot_solution(f'Solution payload {int(payloads[i])} kg', problem, solutions_occ[sol_i], path)
+        plot_solution(f'Solution payload {int(payloads[sol_i])} kg', problem, solutions_occ[sol_i], path)
 
 
 if __name__ == '__main__':
