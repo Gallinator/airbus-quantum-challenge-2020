@@ -22,7 +22,7 @@ class LoadingProblem:
         self.aircraft = aircraft
         self.container_types = container_types
         self.container_masses = container_masses
-        self.target_cg = target_cg
+        self.target_cg = target_cg * aircraft.payload_area_length
         self.zero_payload_mass = zero_payload_mass
         self.zero_payload_cg = zero_payload_cg * aircraft.payload_area_length
         self.container_t = get_container_t(container_types)
