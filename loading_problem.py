@@ -105,6 +105,42 @@ class LoadingProblem:
         bqm.scale(self.coefficients['pl_w'])
         return bqm
 
+    def get_x_cg(self) -> tuple[BQM, BQM]:
+        x_cg_up = BQM.empty('BINARY')
+        x_cg_down = BQM.empty('BINARY')
+        for i, t_i in enumerate(self.container_t):
+            for pos in range(self.aircraft.num_positions):
+                x_cg_up += Binary(f'p_{i}_{pos}', t_i * self.container_masses[i] * self.aircraft.locations[pos])
+                x_cg_down += Binary(f'p_{i}_{pos}', t_i * self.container_masses[i])
+        x_cg_up += self.zero_payload_mass * self.zero_payload_cg
+        x_cg_down += self.zero_payload_mass
+        return x_cg_up, x_cg_down
+
+    def get_cg_target_bqm(self) -> BQM:
+        x_cg_up, x_cg_down = self.get_x_cg()
+        bqm = x_cg_up - x_cg_down * self.target_cg
+        bqm = bqm ** 2
+        bqm *= self.coefficients['cl_t']
+        return bqm
+
+    def get_cg_lower_bqm(self):
+        x_cg_up, x_cg_down = self.get_x_cg()
+        bqm = x_cg_up - x_cg_down * self.aircraft.min_cg
+        for k in range(self.num_slack_variables['cl_l']):
+            bqm += Binary(f'v_cl_l_{k}', -(2 ** k))
+        bqm = bqm ** 2
+        bqm *= self.coefficients['cl_l']
+        return bqm
+
+    def get_cg_upper_bqm(self):
+        x_cg_up, x_cg_down = self.get_x_cg()
+        bqm = x_cg_up - x_cg_down * self.aircraft.max_cg
+        for k in range(self.num_slack_variables['cl_u']):
+            bqm += Binary(f'v_cl_u_{k}', 2 ** k)
+        bqm = bqm ** 2
+        bqm *= self.coefficients['cl_u']
+        return bqm
+
     def get_bqm(self) -> BQM:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
