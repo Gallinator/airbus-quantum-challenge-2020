@@ -110,6 +110,48 @@ class LoadingProblemTests(unittest.TestCase):
 
         self.assertEqual(problem.get_max_capacity_bqm(), true_q)
 
+    def test_cg_target_bqm(self):
+        acft = AircraftData(2, 8, 1, 0, -1, 1)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.125, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_0', 'p_0_0'): 2220,
+                                  ('p_0_1', 'p_0_1'): -340,
+                                  ('p_0_0', 'p_0_1'): -600}, 484)
+
+        self.assertEqual(problem.get_cg_target_bqm(), true_bqm)
+
+    def test_cg_lower_bqm(self):
+        acft = AircraftData(2, 8, 100, 0, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_0', 'p_0_0'): -260,
+                                  ('p_0_1', 'p_0_1'): 1980,
+                                  ('p_0_0', 'p_0_1'): -600,
+                                  ('v_cl_l_0', 'v_cl_l_0'): -35,
+                                  ('p_0_0', 'v_cl_l_0'): 20,
+                                  ('p_0_1', 'v_cl_l_0'): -60}, 324)
+
+        self.assertEqual(problem.get_cg_lower_bqm(), true_bqm)
+
+    def test_cg_upper_bqm(self):
+        acft = AircraftData(2, 8, 100, 0, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([10])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_0', 'p_0_0'): 2220,
+                                  ('p_0_1', 'p_0_1'): -340,
+                                  ('p_0_0', 'p_0_1'): -600,
+                                  ('v_cl_u_0', 'v_cl_u_0'): -43,
+                                  ('p_0_1', 'v_cl_u_0'): 20,
+                                  ('p_0_0', 'v_cl_u_0'): -60}, 484)
+
+        self.assertEqual(problem.get_cg_upper_bqm(), true_bqm)
+
     def test_check_overlap_constraint_true(self):
         acft = AircraftData(3, 10, 30, 0, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
