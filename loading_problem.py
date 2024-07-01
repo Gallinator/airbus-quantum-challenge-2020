@@ -1,7 +1,6 @@
 import math
-from functools import reduce
 import numpy as np
-from dimod import SampleSet, BQM, Binaries, Binary
+from dimod import SampleSet, BQM, Binary
 
 from aircraft_data import AircraftData
 from utils import get_container_t, get_container_d
