@@ -43,7 +43,7 @@ Finally create a new ``` LoadingProblem ``` and set its coefficients<br>
 
 ```python
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
-problem.coefficients = coefs
+    problem.coefficients = coefs
 ```
 
 The ``` LoadingProblem ``` class allows to get the BQM representation of each constraint as well as the total problem to
@@ -58,9 +58,9 @@ plot the top k solutions.<br>
 
 ```python
     cont_occ_solutions = problem.parse_solution(result)
-cont_occ_solutions = problem.filter_solutions(cont_occ_solutions)
+    cont_occ_solutions = problem.filter_solutions(cont_occ_solutions)
 
-plot_top_solutions(problem, cont_occ_solutions, 1)
+    plot_top_solutions(problem, cont_occ_solutions, 1)
 ```
 
 Plots will be saved in the ``` out ``` directory.<br><br>
