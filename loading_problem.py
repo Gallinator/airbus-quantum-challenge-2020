@@ -215,6 +215,12 @@ class LoadingProblem:
                 return False
         return True
 
+    def check_cg_lower_bound_constraint(self, cont_occ: np.ndarray) -> bool:
+        return self.get_cg(cont_occ) >= self.aircraft.min_cg
+
+    def check_cg_upper_bound_constraint(self, cont_occ: np.ndarray) -> bool:
+        return self.get_cg(cont_occ) <= self.aircraft.max_cg
+
     def get_payload_weight(self, cont_occ: np.ndarray) -> float:
         pl_weight = 0
         for index, v in np.ndenumerate(cont_occ):
