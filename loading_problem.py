@@ -170,7 +170,9 @@ class LoadingProblem:
             if (self.check_overlap_constraint(s) and
                     self.check_no_duplicates_constraint(s) and
                     self.check_max_weight_constraint(s) and
-                    self.check_contiguity_constraint(s)):
+                    self.check_contiguity_constraint(s) and
+                    self.check_cg_upper_bound_constraint(s) and
+                    self.check_cg_lower_bound_constraint(s)):
                 res.append(s)
         return res
 
@@ -281,5 +283,7 @@ def get_num_slack_vars(aircraft: AircraftData, num_containers: int) -> dict:
     return {
         'pl_o': aircraft.num_positions,
         'pl_d': num_containers,
-        'pl_w': math.floor(math.log2(aircraft.max_payload)) + 1
+        'pl_w': int(math.log2(aircraft.max_payload)) + 1,
+        'cl_l': 0 if aircraft.min_cg == 0 else int(math.log2(abs(aircraft.min_cg))) + 1,
+        'cl_u': 0 if aircraft.max_cg == 0 else int(math.log2(abs(aircraft.max_cg))) + 1
     }
