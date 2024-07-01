@@ -16,6 +16,9 @@ def get_tuned_coefs(problem: LoadingProblem) -> dict:
     coefs['pl_w'] = get_coef(problem.get_objective_bqm(), problem.get_max_capacity_bqm())
     coefs['pl_d'] = get_coef(problem.get_objective_bqm(), problem.get_no_duplicates_bqm())
     coefs['pl_c'] = get_coef(problem.get_objective_bqm(), problem.get_contiguity_bqm())
+    coefs['cl_u'] = get_coef(problem.get_objective_bqm(), problem.get_cg_upper_bqm())
+    coefs['cl_l'] = get_coef(problem.get_objective_bqm(), problem.get_cg_lower_bqm())
+    coefs['cl_t'] = get_coef(problem.get_objective_bqm(), problem.get_cg_target_bqm())
     return coefs
 
 
