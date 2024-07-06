@@ -266,7 +266,7 @@ class LoadingProblem:
     def get_shear_at_left(self, pos, cont_occ: np.ndarray):
         shear = 0
         for i, t_i in enumerate(self.container_t):
-            for j in range(pos):
+            for j in range(pos+1):
                 shear += t_i * self.container_masses[i] * cont_occ[i, j]
         return shear
 
