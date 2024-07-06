@@ -258,8 +258,8 @@ class LoadingProblem:
             j = math.floor(self.aircraft.num_positions / 2.0) + 1
             for i, t_i in enumerate(self.container_t):
                 s += t_i * self.container_masses[i] * cont_occ[i, j] / 2.0
-            shear_r = [s + shear_l[-1]] + shear_r
-            shear_l += [s + shear_r[0]]
+            shear_r = [s + shear_r[0]] + shear_r
+            shear_l += [shear_l[-1] + s]
 
         return np.array(shear_l), np.array(shear_r)
 
