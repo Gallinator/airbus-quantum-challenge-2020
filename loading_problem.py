@@ -244,7 +244,7 @@ class LoadingProblem:
         return s1 / s2
 
     def get_shear(self, cont_occ: np.ndarray) -> tuple:
-        shear_l = [0]
+        shear_l = []
         shear_r = []
 
         for u, x_u in enumerate(self.aircraft.location_ends):

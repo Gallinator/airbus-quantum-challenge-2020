@@ -56,6 +56,7 @@ def plot_shear(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
     shear_l, shear_r = problem.get_shear(cont_occ)
     x_l = problem.aircraft.location_ends[problem.aircraft.location_ends <= 0]
     # Fill the left end of the curve
+    shear_l = np.insert(shear_l, 0, 0)
     x_l = np.insert(x_l, 0, -problem.aircraft.payload_area_length / 2)
     x_r = problem.aircraft.location_ends[problem.aircraft.location_ends >= 0]
 
