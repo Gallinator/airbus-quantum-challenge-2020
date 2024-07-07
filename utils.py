@@ -24,6 +24,13 @@ def get_linear_shear_curve(num_pos: int, limit: int):
     return np.concatenate((left[1:], right))
 
 
+def get_linear_asym_shear_curve(num_pos: int, limit_l: int, limit_r: int):
+    num_steps = num_pos // 2 + (1 if num_pos % 2 == 0 else 2)
+    left = np.linspace(0, limit_l, num=num_steps)
+    right = np.linspace(limit_r, 0, num=num_steps)
+    return np.concatenate((left[1:], right))
+
+
 def get_container_t(container_types: np.ndarray):
     t = np.ones(len(container_types))
     t[container_types == 't3'] = 1 / 2
