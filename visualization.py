@@ -64,6 +64,7 @@ def plot_shear(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
         x_l = np.concatenate([x_l, [0]])
         x_r = np.concatenate([[0], x_r])
 
+    ax.axvline(0, c='grey')
     ax.plot(x_l, y[:len(x_l)], c='red', label='Max shear')
     ax.plot(x_r, y[len(x_l):], c='red')
     ax.plot(x_l, shear_l, c='green', label='Actual shear')
