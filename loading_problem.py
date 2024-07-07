@@ -219,7 +219,9 @@ class LoadingProblem:
         cg_target = self.get_cg_target_bqm()
         cg_lower = self.get_cg_lower_bqm()
         cg_upper = self.get_cg_upper_bqm()
-        return obj_q + no_overlaps_q + no_duplicates_q + max_capacity_q + contiguity_q + cg_target + cg_lower + cg_upper
+        shear_l = self.get_left_shear_bqm()
+        shear_r = self.get_right_shear_bqm()
+        return obj_q + no_overlaps_q + no_duplicates_q + max_capacity_q + contiguity_q + cg_target + cg_lower + cg_upper + shear_l + shear_r
 
     def parse_solution(self, results: SampleSet) -> np.ndarray:
         solutions = []
