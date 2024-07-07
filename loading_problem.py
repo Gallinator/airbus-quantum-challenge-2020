@@ -243,7 +243,8 @@ class LoadingProblem:
                     self.check_max_weight_constraint(s) and
                     self.check_contiguity_constraint(s) and
                     self.check_cg_upper_bound_constraint(s) and
-                    self.check_cg_lower_bound_constraint(s)):
+                    self.check_cg_lower_bound_constraint(s) and
+                    self.check_shear_constraint(s)):
                 res.append(s)
         return res
 
