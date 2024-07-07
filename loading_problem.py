@@ -326,9 +326,9 @@ class LoadingProblem:
 
         for u, x_u in enumerate(self.aircraft.location_ends):
             if x_u <= 0:
-                shear_l.append(self.get_shear_at_left(u, cont_occ))
+                shear_l.append(self.get_shear_left(u, cont_occ))
             if x_u >= 0:
-                shear_r.append(self.get_shear_at_right(u, cont_occ))
+                shear_r.append(self.get_shear_right(u, cont_occ))
         # Odd number of positions
         if self.aircraft.num_positions % 2 != 0:
             s = 0
@@ -340,14 +340,14 @@ class LoadingProblem:
 
         return np.array(shear_l), np.array(shear_r)
 
-    def get_shear_at_left(self, pos, cont_occ: np.ndarray):
+    def get_shear_left(self, pos, cont_occ: np.ndarray):
         shear = 0
         for i, t_i in enumerate(self.container_t):
-            for j in range(pos+1):
+            for j in range(pos + 1):
                 shear += t_i * self.container_masses[i] * cont_occ[i, j]
         return shear
 
-    def get_shear_at_right(self, pos, cont_occ: np.ndarray):
+    def get_shear_right(self, pos, cont_occ: np.ndarray):
         shear = 0
         for i, t_i in enumerate(self.container_t):
             for j in range(pos + 1, self.aircraft.num_positions):
