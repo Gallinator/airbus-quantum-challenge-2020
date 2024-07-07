@@ -148,6 +148,68 @@ class LoadingProblem:
         bqm *= self.coefficients['cl_u']
         return bqm
 
+    def get_left_shear_at_pos_bqm(self, u: int):
+        bqm = BQM('BINARY')
+        for i, t_i in enumerate(self.container_t):
+            for pos in range(u + 1):
+                bqm += Binary(f'p_{i}_{pos}', t_i * self.container_masses[i])
+        return bqm
+
+    def get_right_shear_at_pos_bqm(self, u: int):
+        bqm = BQM('BINARY')
+        for i, t_i in enumerate(self.container_t):
+            for pos in range(u + 1, self.aircraft.num_positions):
+                bqm += Binary(f'p_{i}_{pos}', t_i * self.container_masses[i])
+        return bqm
+
+    def get_left_shear_bqm(self):
+        bqm = BQM('BINARY')
+        half_pos = int(self.aircraft.num_positions / 2.0)
+        for u in range(half_pos):
+            u_bqm = self.get_left_shear_at_pos_bqm(u)
+            for k in range(self.num_slack_variables['sl'][u]):
+                u_bqm += Binary(f'v_sl_l_{u}_{k}', 2 ** k)
+            u_bqm += -self.aircraft.shear_curve[u]
+            bqm += u_bqm ** 2
+
+        if self.aircraft.num_positions % 2 != 0:
+            zero_bqm = BQM('BINARY')
+            zero_bqm += self.get_left_shear_at_pos_bqm(half_pos - 1)
+            for i, t_i in enumerate(self.container_t):
+                zero_bqm += Binary(f'p_{i}_{half_pos}', t_i * self.container_masses[i] / 2)
+            for k in range(self.num_slack_variables['sl'][half_pos]):
+                zero_bqm += Binary(f'v_sl_l_c_0', 2 ** k)
+            zero_bqm += -self.aircraft.shear_curve[half_pos]
+            bqm += zero_bqm ** 2
+
+        return self.coefficients['sl_l'] * bqm
+
+    def get_right_shear_bqm(self):
+        bqm = BQM('BINARY')
+        half_pos = int(self.aircraft.num_positions / 2.0)
+        is_even_pos = self.aircraft.num_positions % 2 == 0
+        u_min = half_pos - 1 if is_even_pos else half_pos
+        limit_offset = 1 if is_even_pos else 2
+
+        for u in range(u_min, self.aircraft.num_positions - 1):
+            u_bqm = self.get_right_shear_at_pos_bqm(u)
+            for k in range(self.num_slack_variables['sl'][u + limit_offset]):
+                u_bqm += Binary(f'v_sl_r_{u}_{k}', 2 ** k)
+            u_bqm += -self.aircraft.shear_curve[u + limit_offset]
+            bqm += u_bqm ** 2
+
+        if not is_even_pos:
+            zero_bqm = BQM('BINARY')
+            zero_bqm += self.get_right_shear_at_pos_bqm(half_pos)
+            for i, t_i in enumerate(self.container_t):
+                zero_bqm += Binary(f'p_{i}_{half_pos}', t_i * self.container_masses[i] / 2)
+            for k in range(self.num_slack_variables['sl'][half_pos + 1]):
+                zero_bqm += Binary(f'v_sl_r_c_0', 2 ** k)
+            zero_bqm += -self.aircraft.shear_curve[half_pos + 1]
+            bqm += zero_bqm ** 2
+
+        return self.coefficients['sl_r'] * bqm
+
     def get_bqm(self) -> BQM:
         obj_q = self.get_objective_bqm()
         no_overlaps_q = self.get_no_overlaps_bqm()
