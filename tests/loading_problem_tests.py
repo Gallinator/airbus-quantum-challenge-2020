@@ -161,6 +161,69 @@ class LoadingProblemTests(unittest.TestCase):
 
         self.assertEqual(problem.get_cg_upper_bqm(), true_bqm)
 
+    def test_shear_left_even(self):
+        shear_curve = get_linear_shear_curve(2, 1)
+        acft = AircraftData(2, 8, 100, shear_curve, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([1])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_0', 'p_0_0'): -1,
+                                  ('v_sl_l_0_0', 'v_sl_l_0_0'): -1,
+                                  ('p_0_0', 'v_sl_l_0_0'): 2}, 1)
+
+        self.assertEqual(problem.get_left_shear_bqm(), true_bqm)
+
+    def test_shear_right_even(self):
+        shear_curve = get_linear_shear_curve(2, 1)
+        acft = AircraftData(2, 8, 100, shear_curve, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([1])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_1', 'p_0_1'): -1,
+                                  ('v_sl_r_0_0', 'v_sl_r_0_0'): -1,
+                                  ('p_0_1', 'v_sl_r_0_0'): 2}, 1)
+
+        self.assertEqual(problem.get_right_shear_bqm(), true_bqm)
+
+    def test_shear_left_odd(self):
+        shear_curve = get_linear_shear_curve(3, 1)
+        acft = AircraftData(3, 8, 100, shear_curve, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([1])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+        true_bqm = BQM.from_qubo({('p_0_0', 'p_0_0'): -1,
+                                  ('v_sl_l_0_0', 'v_sl_l_0_0'): 0,
+                                  ('p_0_0', 'p_0_0'): -1,
+                                  ('p_0_1', 'p_0_1'): -3 / 4,
+                                  ('v_sl_l_c_0', 'v_sl_l_c_0'): -1,
+                                  ('p_0_0', 'p_0_1'): 1,
+                                  ('p_0_0', 'v_sl_l_c_0'): 2,
+                                  ('p_0_1', 'v_sl_l_c_0'): 1,
+                                  ('p_0_0', 'v_sl_l_0_0'): 2}, 1.25)
+
+        self.assertEqual(problem.get_left_shear_bqm(), true_bqm)
+
+    def test_shear_right_odd(self):
+        shear_curve = get_linear_shear_curve(3, 1)
+        acft = AircraftData(3, 8, 100, shear_curve, -0.125, 0.125)
+        cont_types = np.array(['t1'])
+        cont_masses = np.array([1])
+        problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
+
+        true_bqm = BQM.from_qubo({('p_0_1', 'p_0_1'): -3 / 4,
+                                  ('p_0_2', 'p_0_2'): -1,
+                                  ('v_sl_r_c_0', 'v_sl_r_c_0'): -1,
+                                  ('v_sl_r_1_0', 'v_sl_r_1_0'): 0,
+                                  ('p_0_1', 'p_0_2'): 1,
+                                  ('p_0_1', 'v_sl_r_c_0'): 1,
+                                  ('p_0_2', 'v_sl_r_c_0'): 2,
+                                  ('p_0_2', 'v_sl_r_1_0'): 2}, 1.25)
+        test_bqm = problem.get_right_shear_bqm()
+
+        self.assertEqual(test_bqm, true_bqm)
+
     def test_check_overlap_constraint_true(self):
         shear_curve = get_linear_shear_curve(3, 26000)
         acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
