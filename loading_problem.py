@@ -3,7 +3,7 @@ import numpy as np
 from dimod import SampleSet, BQM, Binary
 
 from aircraft_data import AircraftData
-from utils import get_container_t, get_container_d
+from utils import get_container_t, get_container_d, get_num_bits
 
 
 class LoadingProblem:
@@ -27,7 +27,7 @@ class LoadingProblem:
         self.container_t = get_container_t(container_types)
         self.container_d = get_container_d(container_types)
         self.coefficients = {'pl_o': 1.0, 'pl_w': 1.0, 'pl_d': 1.0, 'pl_c': 1.0, 'cl_t': 1.0, 'cl_u': 1.0, 'cl_l': 1.0}
-        self.num_slack_variables = get_num_slack_vars(aircraft, len(container_types))
+        self.num_slack_variables = self.get_num_slack_vars()
 
     def get_objective_bqm(self) -> BQM:
         bqm = BQM.empty('BINARY')
@@ -277,12 +277,12 @@ class LoadingProblem:
                 shear += t_i * self.container_masses[i] * cont_occ[i, j]
         return shear
 
-
-def get_num_slack_vars(aircraft: AircraftData, num_containers: int) -> dict:
-    return {
-        'pl_o': aircraft.num_positions,
-        'pl_d': num_containers,
-        'pl_w': int(math.log2(aircraft.max_payload)) + 1,
-        'cl_l': 0 if aircraft.min_cg == 0 else int(math.log2(abs(aircraft.min_cg))) + 1,
-        'cl_u': 0 if aircraft.max_cg == 0 else int(math.log2(abs(aircraft.max_cg))) + 1
-    }
+    def get_num_slack_vars(self) -> dict:
+        return {
+            'pl_o': self.aircraft.num_positions,
+            'pl_d': len(self.container_types),
+            'pl_w': get_num_bits(self.aircraft.max_payload),
+            'cl_l': get_num_bits(self.aircraft.min_cg),
+            'cl_u': get_num_bits(self.aircraft.max_cg),
+            'sl': [get_num_bits(s) for s in self.aircraft.shear_curve]
+        }
