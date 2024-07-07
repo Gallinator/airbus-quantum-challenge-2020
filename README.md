@@ -14,13 +14,15 @@ The current implementation lacks an effective strategy to tune the coefficients 
 
 ## Customize problem parameters
 
-To change the aircraft data create an ``` AircraftData ``` object<br>
+To change the aircraft data create an ``` AircraftData ``` object and a shear curve. Two functions are provided to create symmetric and asymmetric linear curves.<br> 
 
 ``` python
-    acft = AircraftData(num_positions=4, payload_area_length=40, max_payload=8000, max_shear=13000, min_cg=-0.1, max_cg=0.2)
+    shear_curve = get_linear_shear_curve(4, 26000)
+    acft = AircraftData(num_positions=4, payloa_area_length=40, max_payload=8000, shear_curve=shear_curve, min_cg=-0.1, max_cg=0.2)
 ```
 
-To change the problem requirements first define the container types anb masses as lists<br>
+To change the problem requirements first define the container types and masses as lists.<br>
+Each point of the shear curve must correspond to a container position with the center elements representing the central position left and right shears.
 
 ``` python
     cont_types = np.array(['t1', 't1', 't1', 't1', 't1', 't1'])
@@ -36,7 +38,9 @@ Define the penalty functions coefficients as a ``` dict ```<br>
              'pl_c': 1.0,
              'cl_u': 1.0,
              'cl_l': 1.0,
-             'cl_t': 1.0}
+             'cl_t': 1.0,
+             'sl_l': 1.0,
+             'sl_r': 1.0}
 ```
 
 Finally create a new ``` LoadingProblem ``` and set its coefficients<br>
@@ -70,6 +74,6 @@ Plots will be saved in the ``` out ``` directory.<br><br>
 
 - [x] Payload constraints
 - [x] CG constraints
-- [ ] Shear constraints
+- [x] Shear constraints
 - [ ] Improve coefficient tuning. This should increase the ratio of feasible solutions found by the solvers
 - [ ] Try hybrid solvers
