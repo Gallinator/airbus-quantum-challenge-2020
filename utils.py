@@ -4,6 +4,13 @@ import traceback
 import numpy as np
 
 
+def get_linear_shear_curve(num_pos: int, limit: int):
+    num_steps = num_pos // 2 + (1 if num_pos % 2 == 0 else 2)
+    left = np.linspace(0, limit, num=num_steps)
+    right = np.linspace(limit, 0, num=num_steps)
+    return np.concatenate((left[1:], right))
+
+
 def get_container_t(container_types: np.ndarray):
     t = np.ones(len(container_types))
     t[container_types == 't3'] = 1 / 2
