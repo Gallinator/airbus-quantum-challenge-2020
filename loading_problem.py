@@ -297,6 +297,10 @@ class LoadingProblem:
     def check_cg_upper_bound_constraint(self, cont_occ: np.ndarray) -> bool:
         return self.get_cg(cont_occ) <= self.aircraft.max_cg
 
+    def check_shear_constraint(self, cont_occ: np.ndarray) -> bool:
+        shear = np.concatenate(self.get_shear(cont_occ))[:-1]
+        return np.all(np.less(shear, self.aircraft.shear_curve[:-1]))
+
     def get_payload_weight(self, cont_occ: np.ndarray) -> float:
         pl_weight = 0
         for index, v in np.ndenumerate(cont_occ):
