@@ -17,17 +17,26 @@ def get_num_bits(value) -> int:
     return 1 if value == 0 else abs(int(math.log2(abs(value)))) + 1
 
 
+def get_linear_left_curve(num_pos, limit):
+    if num_pos % 2 == 0:
+        num_steps = num_pos // 2 + 1
+        step_size = limit / (num_steps - 1)
+    else:
+        num_steps = num_pos // 2 + 2
+        step_size = limit / (num_steps - 1.5)
+    left = [i * step_size for i in range(num_steps - 1)]
+    return np.append(left, [limit])
+
+
 def get_linear_shear_curve(num_pos: int, limit: int):
-    num_steps = num_pos // 2 + (1 if num_pos % 2 == 0 else 2)
-    left = np.linspace(0, limit, num=num_steps)
-    right = np.linspace(limit, 0, num=num_steps)
+    left = get_linear_left_curve(num_pos, limit)
+    right = np.flip(left)
     return np.concatenate((left[1:], right))
 
 
 def get_linear_asym_shear_curve(num_pos: int, limit_l: int, limit_r: int):
-    num_steps = num_pos // 2 + (1 if num_pos % 2 == 0 else 2)
-    left = np.linspace(0, limit_l, num=num_steps)
-    right = np.linspace(limit_r, 0, num=num_steps)
+    left = get_linear_left_curve(num_pos, limit_l)
+    right = np.flip(get_linear_left_curve(num_pos, limit_r))
     return np.concatenate((left[1:], right))
 
 
