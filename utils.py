@@ -1,7 +1,20 @@
+import math
 import threading
 import traceback
 
 import numpy as np
+
+
+def get_num_bits(value) -> int:
+    """
+    Computes the number of bits required to represent a value.
+    If -1 < v < 1 returns 1 as the value has to be represented by some bit.
+    :param value: The number to represent
+    :return: The number of bits required to represent abs(v)
+    """
+    if -1 < value < 1:
+        return 1
+    return 1 if value == 0 else abs(int(math.log2(abs(value)))) + 1
 
 
 def get_linear_shear_curve(num_pos: int, limit: int):
