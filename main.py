@@ -7,6 +7,7 @@ from dwave.system import DWaveSampler, EmbeddingComposite
 from aircraft_data import AircraftData
 from coefficient_tuning import get_coef
 from loading_problem import LoadingProblem
+from utils import get_linear_shear_curve
 from visualization import plot_solution
 
 
@@ -24,7 +25,8 @@ def get_tuned_coefs(problem: LoadingProblem) -> dict:
 
 def main():
     use_real_sampler = input('Use real sampler? [y/n]').lower() == 'y'
-    acft = AircraftData(4, 40, 8000, 26000, -0.1, 0.2)
+    shear_curve = get_linear_shear_curve(4, 26000)
+    acft = AircraftData(4, 40, 8000, shear_curve, -0.1, 0.2)
     cont_types = np.array(['t1', 't1', 't1', 't1', 't1', 't1'])
     cont_masses = np.array([2134, 3455, 1866, 1699, 3500, 3332])
 

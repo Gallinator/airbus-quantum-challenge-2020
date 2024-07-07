@@ -1,12 +1,16 @@
 import numpy as np
 
+from utils import get_linear_shear_curve
+
 
 class AircraftData:
-    def __init__(self, num_positions, payload_area_length, max_payload, max_shear, min_cg, max_cg):
+    def __init__(self, num_positions, payload_area_length, max_payload, shear_curve, min_cg, max_cg):
         self.num_positions = num_positions
         self.payload_area_length = payload_area_length
         self.max_payload = max_payload
-        self.max_shear = max_shear
+        if not self.is_shear_curve_valid(shear_curve):
+            raise ValueError(f'Invalid shear curve length of {len(shear_curve)}')
+        self.shear_curve = shear_curve
         self.min_cg = min_cg * payload_area_length
         self.max_cg = max_cg * payload_area_length
         self.locations = self._get_locations()
@@ -31,6 +35,16 @@ class AircraftData:
             pos.append(x_u)
         return np.array(pos)
 
+    def is_shear_curve_valid(self, shear_curve):
+        is_even_pos = self.num_positions % 2 == 0
+        if is_even_pos:
+            # Take into account center left and right shear
+            return len(shear_curve) == self.num_positions + 1
+        else:
+            # The center point is not accounted for in num_positions
+            return len(shear_curve) == self.num_positions + 2
+
 
 def get_default_aircraft() -> AircraftData:
-    return AircraftData(20, 40, 40000, 26000, -0.1, 0.2)
+    shear_curve = get_linear_shear_curve(20, 26000)
+    return AircraftData(20, 40, 40000, shear_curve, -0.1, 0.2)

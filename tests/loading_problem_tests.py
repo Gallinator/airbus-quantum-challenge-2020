@@ -5,6 +5,7 @@ from dimod import BQM
 
 from aircraft_data import get_default_aircraft, AircraftData
 from loading_problem import LoadingProblem
+from utils import get_linear_shear_curve
 
 
 class LoadingProblemTests(unittest.TestCase):
@@ -17,7 +18,8 @@ class LoadingProblemTests(unittest.TestCase):
             LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
 
     def test_objective_q(self):
-        acft = AircraftData(2, 10, 1, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 10, 1, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -30,7 +32,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_objective_bqm(), true_q)
 
     def test_no_overlaps_q(self):
-        acft = AircraftData(2, 10, 1, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 10, 1, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -51,7 +54,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_no_overlaps_bqm(), true_q)
 
     def test_no_duplicates_q(self):
-        acft = AircraftData(2, 10, 1, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 10, 1, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -72,7 +76,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_no_duplicates_bqm(), true_q)
 
     def test_contiguity_q(self):
-        acft = AircraftData(2, 10, 1, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 10, 1, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't3'])
         cont_masses = np.array([100, 100, 100])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -87,7 +92,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_contiguity_bqm(), true_q)
 
     def test_max_capacity_q(self):
-        acft = AircraftData(2, 10, 1, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 10, 1, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3'])
         cont_masses = np.array([10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -111,7 +117,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_max_capacity_bqm(), true_q)
 
     def test_cg_target_bqm(self):
-        acft = AircraftData(2, 8, 1, 0, -1, 1)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 8, 1, shear_curve, -1, 1)
         cont_types = np.array(['t1'])
         cont_masses = np.array([10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.125, 20, -0.0125)
@@ -123,7 +130,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_cg_target_bqm(), true_bqm)
 
     def test_cg_lower_bqm(self):
-        acft = AircraftData(2, 8, 100, 0, -0.125, 0.125)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 8, 100, shear_curve, -0.125, 0.125)
         cont_types = np.array(['t1'])
         cont_masses = np.array([10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
@@ -138,7 +146,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_cg_lower_bqm(), true_bqm)
 
     def test_cg_upper_bqm(self):
-        acft = AircraftData(2, 8, 100, 0, -0.125, 0.125)
+        shear_curve = get_linear_shear_curve(2, 26000)
+        acft = AircraftData(2, 8, 100, shear_curve, -0.125, 0.125)
         cont_types = np.array(['t1'])
         cont_masses = np.array([10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0625, 20, -0.0125)
@@ -153,7 +162,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertEqual(problem.get_cg_upper_bqm(), true_bqm)
 
     def test_check_overlap_constraint_true(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -166,7 +176,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertTrue(problem.check_overlap_constraint(cont_occ))
 
     def test_check_overlap_constraint_false(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -179,7 +190,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertFalse(problem.check_overlap_constraint(cont_occ))
 
     def test_check_contiguity_constraint_true(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -192,7 +204,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertTrue(problem.check_contiguity_constraint(cont_occ))
 
     def test_check_contiguity_constraint_false(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -205,7 +218,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertFalse(problem.check_contiguity_constraint(cont_occ))
 
     def test_check_max_weight_constraint_true(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -218,7 +232,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertTrue(problem.check_max_weight_constraint(cont_occ))
 
     def test_check_max_weight_constraint_false(self):
-        acft = AircraftData(3, 10, 20, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 20, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -231,7 +246,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertFalse(problem.check_max_weight_constraint(cont_occ))
 
     def test_check_no_duplicates_constraint_true(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -244,7 +260,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertTrue(problem.check_no_duplicates_constraint(cont_occ))
 
     def test_check_no_duplicates_constraint_false(self):
-        acft = AircraftData(3, 10, 20, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 20, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
@@ -257,7 +274,8 @@ class LoadingProblemTests(unittest.TestCase):
         self.assertFalse(problem.check_no_duplicates_constraint(cont_occ))
 
     def test_get_payload_weight(self):
-        acft = AircraftData(3, 10, 30, 0, 0, 0)
+        shear_curve = get_linear_shear_curve(3, 26000)
+        acft = AircraftData(3, 10, 30, shear_curve, 0, 0)
         cont_types = np.array(['t1', 't3', 't2'])
         cont_masses = np.array([10, 10, 10])
         problem = LoadingProblem(acft, cont_types, cont_masses, 0.0, 120000, -0.05)
