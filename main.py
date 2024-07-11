@@ -1,3 +1,4 @@
+import dwave.inspector
 import numpy as np
 from dimod import as_bqm
 from dwave.cloud import Client
@@ -49,6 +50,7 @@ def main():
         sampler_embedding = EmbeddingComposite(sampler)
         chain_str = max(np.abs(np.fromiter(bqm.to_qubo()[0].values(), dtype=float))) * 1.5
         result = sampler_embedding.sample(bqm, num_reads=1000, label=label, chain_strength=chain_str).aggregate()
+        dwave.inspector.show(result)
     else:
         sampler = SimulatedAnnealingSampler()
         result = sampler.sample(bqm, num_reads=1000).aggregate()
