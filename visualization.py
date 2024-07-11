@@ -70,7 +70,7 @@ def plot_shear(ax: Axes, problem: LoadingProblem, cont_occ: np.ndarray):
     ax.plot(x_l, shear_l, c='green', label='Actual shear')
     ax.plot(x_r, shear_r, c='green')
     ax.set_xlabel('x')
-    ax.set_ylabel('Shear [N]')
+    ax.set_ylabel('Shear [Kg]')
     ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
     ax.legend()
 
