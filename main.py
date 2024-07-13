@@ -39,7 +39,7 @@ def main():
 
     if use_real_sampler:
         with Client.from_config() as client:
-            available_solvers = client.get_solvers()
+            available_solvers = client.get_solvers(hybrid=False)
 
         for i, solver in enumerate(available_solvers):
             print(f'[{i}] - {solver.id}')
