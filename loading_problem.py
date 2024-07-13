@@ -37,7 +37,7 @@ class LoadingProblem:
                              'sl_l': 1.0,
                              'sl_r': 1.0}
         self.num_slack_variables = self.get_num_slack_vars()
-        self.enabled_constraints = {'pl_o', 'pl_w', 'pl_d', 'pl_c', 'cl_t', 'cl_u', 'cl_l', 'sl'}
+        self.enabled_constraints = {'pl_o', 'pl_w', 'pl_d', 'pl_c'}
 
     def enable_constraints(self, constraints: set[str]):
         self.enabled_constraints.update(constraints)
