@@ -1,3 +1,4 @@
+import json
 import math
 import numpy as np
 from dimod import SampleSet, BQM, Binary
@@ -235,17 +236,39 @@ class LoadingProblem:
             solutions.append(cont_occ)
         return np.array(solutions)
 
-    def filter_solutions(self, solutions: np.ndarray) -> list:
+    def filter_solutions(self, solutions: np.ndarray, verbose=True) -> list:
         res = []
+        violated_constraints = {'pl_o': 0, 'pl_d': 0, 'pl_w': 0, 'pl_c': 0, 'cg_u': 0, 'cg_l': 0, 'sl': 0}
         for s in solutions:
-            if (self.check_overlap_constraint(s) and
-                    self.check_no_duplicates_constraint(s) and
-                    self.check_max_weight_constraint(s) and
-                    self.check_contiguity_constraint(s) and
-                    self.check_cg_upper_bound_constraint(s) and
-                    self.check_cg_lower_bound_constraint(s) and
-                    self.check_shear_constraint(s)):
+            discard = False
+            if not self.check_overlap_constraint(s):
+                violated_constraints['pl_o'] += 1
+                discard = True
+            if not self.check_no_duplicates_constraint(s):
+                violated_constraints['pl_d'] += 1
+                discard = True
+            if not self.check_max_weight_constraint(s):
+                discard = True
+                violated_constraints['pl_w'] += 1
+            if not self.check_contiguity_constraint(s):
+                discard = True
+                violated_constraints['pl_c'] += 1
+            if not self.check_cg_upper_bound_constraint(s):
+                discard = True
+                violated_constraints['cg_u'] += 1
+            if not self.check_cg_lower_bound_constraint(s):
+                discard = True
+                violated_constraints['cg_l'] += 1
+            if not self.check_shear_constraint(s):
+                discard = True
+                violated_constraints['sl'] += 1
+            if not discard:
                 res.append(s)
+
+        if verbose:
+            print(f'{len(res)} feasible solutions out of {len(solutions)}')
+            print('Violated constraints:')
+            print(json.dumps(violated_constraints, indent=1, )[2:-2])
         return res
 
     def check_overlap_constraint(self, cont_occ: np.ndarray) -> bool:
