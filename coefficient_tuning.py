@@ -1,4 +1,6 @@
 import math
+import multiprocessing
+
 import numpy as np
 from dimod import BQM
 from dwave.samplers import SteepestDescentSampler
@@ -20,31 +22,34 @@ def tune_coefs_average(problem: LoadingProblem) -> dict:
     return coefs
 
 
-def tune_coefs_iterative(problem: LoadingProblem, step_sizes=None, verbose=True) -> dict:
+def tune_task(coef_id, obj, penalty, step_size):
+    print(f'Tuning {coef_id} coefficient')
+    coef = coef_id, calc_coef_iterative(obj, penalty, step_size)
+    print(f'{coef_id} coeffiecient {coef}')
+    return coef
+
+
+def tune_coefs_iterative(problem: LoadingProblem, step_sizes=None) -> dict:
     if step_sizes is None:
         step_sizes = {'pl_o': 1, 'pl_w': 0.01, 'pl_d': 0.1, 'pl_c': 1,
                       'cl_t': 0.0000000001, 'cl_u': 0.000000001, 'cl_l': 0.0000000001,
                       'sl_l': 0.1, 'sl_r': 0.01}
-    coefs = {}
-    coefs['pl_o'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_no_overlaps_bqm(),
-                                        step_sizes['pl_o'], verbose)
-    coefs['pl_w'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_max_capacity_bqm(),
-                                        step_sizes['pl_w'], verbose)
-    coefs['pl_d'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_no_duplicates_bqm(),
-                                        step_sizes['pl_d'], verbose)
-    coefs['pl_c'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_contiguity_bqm(),
-                                        step_sizes['pl_c'], verbose)
-    coefs['cl_u'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_cg_upper_bqm(),
-                                        step_sizes['cl_u'], verbose)
-    coefs['cl_l'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_cg_lower_bqm(),
-                                        step_sizes['cl_l'], verbose)
-    coefs['cl_t'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_cg_target_bqm(),
-                                        step_sizes['cl_t'], verbose)
-    coefs['sl_l'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_left_shear_bqm(),
-                                        step_sizes['sl_l'], verbose)
-    coefs['sl_r'] = calc_coef_iterative(problem.get_objective_bqm(), problem.get_right_shear_bqm(),
-                                        step_sizes['sl_r'], verbose)
-    return coefs
+    with multiprocessing.Pool() as pool:
+        args = [
+            ('pl_o', problem.get_objective_bqm(), problem.get_no_overlaps_bqm(), step_sizes['pl_o']),
+            ('pl_w', problem.get_objective_bqm(), problem.get_max_capacity_bqm(), step_sizes['pl_w']),
+            ('pl_c', problem.get_objective_bqm(), problem.get_contiguity_bqm(), step_sizes['pl_c']),
+            ('pl_d', problem.get_objective_bqm(), problem.get_no_duplicates_bqm(), step_sizes['pl_d']),
+            ('cl_u', problem.get_objective_bqm(), problem.get_cg_upper_bqm(), step_sizes['cl_u']),
+            ('cl_l', problem.get_objective_bqm(), problem.get_cg_lower_bqm(), step_sizes['cl_l']),
+            ('cl_t', problem.get_objective_bqm(), problem.get_cg_target_bqm(), step_sizes['cl_t']),
+            ('sl_l', problem.get_objective_bqm(), problem.get_left_shear_bqm(), step_sizes['sl_l']),
+            ('sl_r', problem.get_objective_bqm(), problem.get_right_shear_bqm(), step_sizes['sl_r'])
+        ]
+        coefs = {}
+        for coef_id, c in pool.starmap(tune_task, args):
+            coefs[coef_id] = c
+        return coefs
 
 
 def calc_coef_average(objective_q: BQM, penalty_q: BQM) -> float:
