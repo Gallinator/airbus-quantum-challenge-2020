@@ -37,6 +37,13 @@ class LoadingProblem:
                              'sl_l': 1.0,
                              'sl_r': 1.0}
         self.num_slack_variables = self.get_num_slack_vars()
+        self.enabled_constraints = {'pl_o', 'pl_w', 'pl_d', 'pl_c', 'cl_t', 'cl_u', 'cl_l', 'sl'}
+
+    def enable_constraints(self, constraints: set[str]):
+        self.enabled_constraints.update(constraints)
+
+    def disable_constraints(self, constraints: set[str]):
+        self.enabled_constraints -= constraints
 
     def get_objective_bqm(self) -> BQM:
         bqm = BQM.empty('BINARY')
@@ -212,17 +219,25 @@ class LoadingProblem:
         return self.coefficients['sl_r'] * bqm
 
     def get_bqm(self) -> BQM:
-        obj_q = self.get_objective_bqm()
-        no_overlaps_q = self.get_no_overlaps_bqm()
-        no_duplicates_q = self.get_no_duplicates_bqm()
-        max_capacity_q = self.get_max_capacity_bqm()
-        contiguity_q = self.get_contiguity_bqm()
-        cg_target = self.get_cg_target_bqm()
-        cg_lower = self.get_cg_lower_bqm()
-        cg_upper = self.get_cg_upper_bqm()
-        shear_l = self.get_left_shear_bqm()
-        shear_r = self.get_right_shear_bqm()
-        return obj_q + no_overlaps_q + no_duplicates_q + max_capacity_q + contiguity_q + cg_target + cg_lower + cg_upper + shear_l + shear_r
+        bqm = self.get_objective_bqm()
+        if 'pl_o' in self.enabled_constraints:
+            bqm += self.get_no_overlaps_bqm()
+        if 'pl_d' in self.enabled_constraints:
+            bqm += self.get_no_duplicates_bqm()
+        if 'pl_w' in self.enabled_constraints:
+            bqm += self.get_max_capacity_bqm()
+        if 'pl_c' in self.enabled_constraints:
+            bqm += self.get_contiguity_bqm()
+        if 'cl_t' in self.enabled_constraints:
+            bqm += self.get_cg_target_bqm()
+        if 'cl_l' in self.enabled_constraints:
+            bqm += self.get_cg_lower_bqm()
+        if 'cl_u' in self.enabled_constraints:
+            bqm += self.get_cg_upper_bqm()
+        if 'sl' in self.enabled_constraints:
+            bqm += self.get_left_shear_bqm()
+            bqm += self.get_right_shear_bqm()
+        return bqm
 
     def parse_solution(self, results: SampleSet) -> np.ndarray:
         solutions = []
@@ -238,28 +253,28 @@ class LoadingProblem:
 
     def filter_solutions(self, solutions: np.ndarray, verbose=True) -> list:
         res = []
-        violated_constraints = {'pl_o': 0, 'pl_d': 0, 'pl_w': 0, 'pl_c': 0, 'cg_u': 0, 'cg_l': 0, 'sl': 0}
+        violated_constraints = dict.fromkeys(self.enabled_constraints, 0)
         for s in solutions:
             discard = False
-            if not self.check_overlap_constraint(s):
+            if 'pl_o' in self.enabled_constraints and not self.check_overlap_constraint(s):
                 violated_constraints['pl_o'] += 1
                 discard = True
-            if not self.check_no_duplicates_constraint(s):
+            if 'pl_d' in self.enabled_constraints and not self.check_no_duplicates_constraint(s):
                 violated_constraints['pl_d'] += 1
                 discard = True
-            if not self.check_max_weight_constraint(s):
+            if 'pl_w' in self.enabled_constraints and not self.check_max_weight_constraint(s):
                 discard = True
                 violated_constraints['pl_w'] += 1
-            if not self.check_contiguity_constraint(s):
+            if 'pl_c' in self.enabled_constraints and not self.check_contiguity_constraint(s):
                 discard = True
                 violated_constraints['pl_c'] += 1
-            if not self.check_cg_upper_bound_constraint(s):
+            if 'cl_u' in self.enabled_constraints and not self.check_cg_upper_bound_constraint(s):
                 discard = True
-                violated_constraints['cg_u'] += 1
-            if not self.check_cg_lower_bound_constraint(s):
+                violated_constraints['cl_u'] += 1
+            if 'cl_l' in self.enabled_constraints and not self.check_cg_lower_bound_constraint(s):
                 discard = True
-                violated_constraints['cg_l'] += 1
-            if not self.check_shear_constraint(s):
+                violated_constraints['cl_l'] += 1
+            if 'sl' in self.enabled_constraints and not self.check_shear_constraint(s):
                 discard = True
                 violated_constraints['sl'] += 1
             if not discard:
