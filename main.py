@@ -1,27 +1,14 @@
 import dwave.inspector
 import numpy as np
-from dimod import as_bqm
 from dwave.cloud import Client
 from dwave.samplers import SimulatedAnnealingSampler
 from dwave.system import DWaveSampler, EmbeddingComposite
 
 from aircraft_data import AircraftData
-from coefficient_tuning import get_coef
+from coefficient_tuning import tune_coefs_average
 from loading_problem import LoadingProblem
 from utils import get_linear_shear_curve
 from visualization import plot_solution
-
-
-def get_tuned_coefs(problem: LoadingProblem) -> dict:
-    coefs = {}
-    coefs['pl_o'] = get_coef(problem.get_objective_bqm(), problem.get_no_overlaps_bqm())
-    coefs['pl_w'] = get_coef(problem.get_objective_bqm(), problem.get_max_capacity_bqm())
-    coefs['pl_d'] = get_coef(problem.get_objective_bqm(), problem.get_no_duplicates_bqm())
-    coefs['pl_c'] = get_coef(problem.get_objective_bqm(), problem.get_contiguity_bqm())
-    coefs['cl_u'] = get_coef(problem.get_objective_bqm(), problem.get_cg_upper_bqm())
-    coefs['cl_l'] = get_coef(problem.get_objective_bqm(), problem.get_cg_lower_bqm())
-    coefs['cl_t'] = get_coef(problem.get_objective_bqm(), problem.get_cg_target_bqm())
-    return coefs
 
 
 def main():
@@ -33,8 +20,7 @@ def main():
 
     # Solve
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
-    problem.coefficients = get_tuned_coefs(problem)
-
+    problem.coefficients = tune_coefs_average(problem)
     bqm = problem.get_bqm()
 
     if use_real_sampler:
