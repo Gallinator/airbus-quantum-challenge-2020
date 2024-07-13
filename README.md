@@ -49,6 +49,26 @@ Finally create a new ``` LoadingProblem ``` and set its coefficients<br>
     problem = LoadingProblem(acft, cont_types, cont_masses, 0.1, 120000, -0.05)
     problem.coefficients = coefs
 ```
+Constraints can be enabled or disabled individually
+
+```python
+    problem.disable_constraints({'sl'})
+    problem.enable_constraints({'sl'})
+```
+By default only the payload constraints are enabled
+
+Two methods are provided to tune the coefficients automatically for a give problem.
+
+```python
+    problem.coefficients = tune_coefs_average(problem)
+```
+
+This method uses the average values of each penalty BQM
+
+```python
+    problem.coefficients = tune_coefs_iterative(problem)
+```
+This method increases the coefficients iteratively until the penalty and objective functions have the same order of magnitude. The increase step can be customized.
 
 The ``` LoadingProblem ``` class allows to get the BQM representation of each constraint as well as the total problem to
 pass to the solver. For example to create a BQM to pass to the solvers use<br>
