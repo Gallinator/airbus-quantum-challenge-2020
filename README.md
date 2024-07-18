@@ -8,9 +8,12 @@ The current implementation lacks an effective strategy to tune the coefficients 
 ## How to run
 
 - Install requirements ``` pip install -r requirements.txt ```
+- [Optional] Install the D-Wave inspector ``` dwave install inspector ```
 - [Optional] Create an account at [D-Wave Leap](https://cloud.dwavesys.com/leap/signup/)
 - [Optional] Take your API key then run ``` dwave config create ```
 - Run ``` python main.py ```
+
+Optional steps are required only to use the QPU solvers.
 
 ## Customize problem parameters
 
